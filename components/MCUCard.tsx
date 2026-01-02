@@ -124,18 +124,18 @@ export default function MCUCard({
             </div>
           )}
 
-          {/* Phase badge */}
-          <div className="absolute bottom-14 left-2 px-2.5 py-1 bg-gradient-to-r from-marvel-red to-red-600 rounded-lg text-xs font-bold text-white shadow-lg">
-            Fase {item.phase}
-          </div>
-
           {/* Content */}
           <div className="absolute inset-x-0 bottom-0 p-3">
+            {/* Phase badge */}
+            <div className="inline-block px-2 py-0.5 mb-2 bg-gradient-to-r from-marvel-red to-red-600 rounded text-xs font-bold text-white shadow-lg">
+              Fase {item.phase}
+            </div>
+
             <h3 className="font-bold text-white text-sm leading-tight mb-1.5 line-clamp-2 drop-shadow-lg">
               {item.title}
             </h3>
 
-            <div className="flex items-center gap-2 text-xs text-gray-300 mb-2">
+            <div className="flex items-center gap-2 text-xs text-gray-300">
               <span className="font-medium">{item.releaseYear}</span>
               {item.duration && (
                 <>
@@ -152,14 +152,27 @@ export default function MCUCard({
             </div>
 
             {/* Where to watch */}
-            <div className="flex flex-wrap gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="flex flex-wrap gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {item.whereToWatch.slice(0, 2).map((platform) => (
-                <span
-                  key={platform}
-                  className="px-2 py-0.5 bg-white/20 backdrop-blur-md rounded-md text-xs text-white font-medium"
-                >
-                  {platform}
-                </span>
+                platform === 'Disney+' ? (
+                  <a
+                    key={platform}
+                    href="https://www.disneyplus.com/pt-br/brand/marvel"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="px-2 py-0.5 bg-blue-600/80 hover:bg-blue-500 backdrop-blur-md rounded-md text-xs text-white font-medium transition-colors"
+                  >
+                    {platform}
+                  </a>
+                ) : (
+                  <span
+                    key={platform}
+                    className="px-2 py-0.5 bg-white/20 backdrop-blur-md rounded-md text-xs text-white font-medium"
+                  >
+                    {platform}
+                  </span>
+                )
               ))}
             </div>
           </div>

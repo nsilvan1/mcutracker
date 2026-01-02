@@ -24,6 +24,9 @@ export interface MCUItem {
   budget?: string;
   boxOffice?: string;
   postCreditsScenes?: number;
+  trailerUrl?: string;
+  trailerUrlDublado?: string;
+  trailerUrlLegendado?: string;
 }
 
 export const mcuData: MCUItem[] = [
@@ -51,6 +54,9 @@ export const mcuData: MCUItem[] = [
     budget: '$140 milhões',
     boxOffice: '$585 milhões',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=8ugaeA-nMTc',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=PnV7oyiCY0E',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=8ugaeA-nMTc',
   },
   {
     id: 'incredible-hulk',
@@ -75,6 +81,7 @@ export const mcuData: MCUItem[] = [
     budget: '$150 milhões',
     boxOffice: '$265 milhões',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=xbqNb2PFKKA',
   },
   {
     id: 'iron-man-2',
@@ -99,6 +106,7 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$624 milhões',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=BoohRoVA9WQ',
   },
   {
     id: 'thor',
@@ -123,6 +131,7 @@ export const mcuData: MCUItem[] = [
     budget: '$150 milhões',
     boxOffice: '$449 milhões',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=JOddp-nlNvQ',
   },
   {
     id: 'captain-america-first-avenger',
@@ -147,6 +156,7 @@ export const mcuData: MCUItem[] = [
     budget: '$140 milhões',
     boxOffice: '$370 milhões',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=JerVrbLldXw',
   },
   {
     id: 'avengers',
@@ -171,6 +181,9 @@ export const mcuData: MCUItem[] = [
     budget: '$220 milhões',
     boxOffice: '$1.519 bilhão',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=eOrNdBpGMv8',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=KeNEGtsCWEk',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=eOrNdBpGMv8',
   },
   // FASE 2
   {
@@ -196,6 +209,7 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$1.215 bilhão',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=Ke1Y3P9D0Bc',
   },
   {
     id: 'thor-dark-world',
@@ -220,6 +234,7 @@ export const mcuData: MCUItem[] = [
     budget: '$170 milhões',
     boxOffice: '$644 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=npvJ9FTgZbM',
   },
   {
     id: 'captain-america-winter-soldier',
@@ -244,6 +259,7 @@ export const mcuData: MCUItem[] = [
     budget: '$170 milhões',
     boxOffice: '$714 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=7SlILk2WMTI',
   },
   {
     id: 'guardians-galaxy',
@@ -268,6 +284,7 @@ export const mcuData: MCUItem[] = [
     budget: '$170 milhões',
     boxOffice: '$773 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=d96cjJhvlMA',
   },
   {
     id: 'avengers-age-ultron',
@@ -292,6 +309,9 @@ export const mcuData: MCUItem[] = [
     budget: '$250 milhões',
     boxOffice: '$1.403 bilhão',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=tmeOjFno6Do',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=qMRlp1u5uzI',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=tmeOjFno6Do',
   },
   {
     id: 'ant-man',
@@ -316,6 +336,7 @@ export const mcuData: MCUItem[] = [
     budget: '$130 milhões',
     boxOffice: '$519 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=pWdKf3MneyI',
   },
   // FASE 3
   {
@@ -341,6 +362,9 @@ export const mcuData: MCUItem[] = [
     budget: '$250 milhões',
     boxOffice: '$1.153 bilhão',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=dKrVegVI0Us',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=FkTybqcX-Yo',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=dKrVegVI0Us',
   },
   {
     id: 'doctor-strange',
@@ -365,6 +389,7 @@ export const mcuData: MCUItem[] = [
     budget: '$165 milhões',
     boxOffice: '$678 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=HSzx-zryEgM',
   },
   {
     id: 'guardians-galaxy-2',
@@ -389,6 +414,7 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$864 milhões',
     postCreditsScenes: 5,
+    trailerUrl: 'https://www.youtube.com/watch?v=wUn05hdkhjM',
   },
   {
     id: 'spider-man-homecoming',
@@ -413,6 +439,7 @@ export const mcuData: MCUItem[] = [
     budget: '$175 milhões',
     boxOffice: '$880 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=xrzXIaTt99U',
   },
   {
     id: 'thor-ragnarok',
@@ -437,6 +464,7 @@ export const mcuData: MCUItem[] = [
     budget: '$180 milhões',
     boxOffice: '$854 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=ue80QwXMRHg',
   },
   {
     id: 'black-panther',
@@ -461,6 +489,7 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$1.348 bilhão',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=xjDjIWPwcPU',
   },
   {
     id: 'avengers-infinity-war',
@@ -485,6 +514,9 @@ export const mcuData: MCUItem[] = [
     budget: '$316 milhões',
     boxOffice: '$2.048 bilhões',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=6ZfuNTqbHE8',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=QKeR5An0BpM',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=6ZfuNTqbHE8',
   },
   {
     id: 'ant-man-wasp',
@@ -509,6 +541,7 @@ export const mcuData: MCUItem[] = [
     budget: '$162 milhões',
     boxOffice: '$622 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=8_rTIAOohas',
   },
   {
     id: 'captain-marvel',
@@ -533,6 +566,7 @@ export const mcuData: MCUItem[] = [
     budget: '$152 milhões',
     boxOffice: '$1.131 bilhão',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=Z1BCujX3pw8',
   },
   {
     id: 'avengers-endgame',
@@ -557,6 +591,9 @@ export const mcuData: MCUItem[] = [
     budget: '$356 milhões',
     boxOffice: '$2.799 bilhões',
     postCreditsScenes: 0,
+    trailerUrl: 'https://www.youtube.com/watch?v=TcMBFSGVi1c',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=g6ng8iy-l0U',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=TcMBFSGVi1c',
   },
   {
     id: 'spider-man-far-home',
@@ -581,6 +618,7 @@ export const mcuData: MCUItem[] = [
     budget: '$160 milhões',
     boxOffice: '$1.132 bilhão',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=Nt9L1jCKGnE',
   },
   // FASE 4
   {
@@ -606,6 +644,7 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$379 milhões',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=ybji16u608U',
   },
   {
     id: 'loki-s1',
@@ -628,6 +667,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Tom Hiddleston', 'Sophia Di Martino', 'Owen Wilson', 'Gugu Mbatha-Raw', 'Wunmi Mosaku', 'Jonathan Majors'],
     rating: 8.2,
     genres: ['Ação', 'Fantasia', 'Ficção Científica'],
+    trailerUrl: 'https://www.youtube.com/watch?v=nW948Va-l10',
   },
   {
     id: 'what-if-s1',
@@ -650,6 +690,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Jeffrey Wright', 'Hayley Atwell', 'Chadwick Boseman', 'Josh Brolin', 'Samuel L. Jackson'],
     rating: 7.4,
     genres: ['Animação', 'Ação', 'Ficção Científica'],
+    trailerUrl: 'https://www.youtube.com/watch?v=x9D0uUKJ5KI',
   },
   {
     id: 'wandavision',
@@ -672,6 +713,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Elizabeth Olsen', 'Paul Bettany', 'Kathryn Hahn', 'Teyonah Parris', 'Randall Park', 'Kat Dennings'],
     rating: 7.9,
     genres: ['Drama', 'Mistério', 'Ficção Científica'],
+    trailerUrl: 'https://www.youtube.com/watch?v=sj9J2ecsSpo',
   },
   {
     id: 'falcon-winter-soldier',
@@ -694,6 +736,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Anthony Mackie', 'Sebastian Stan', 'Daniel Brühl', 'Emily VanCamp', 'Wyatt Russell', 'Erin Kellyman'],
     rating: 7.2,
     genres: ['Ação', 'Aventura', 'Drama'],
+    trailerUrl: 'https://www.youtube.com/watch?v=IWBsDaFWyTE',
   },
   {
     id: 'shang-chi',
@@ -718,6 +761,7 @@ export const mcuData: MCUItem[] = [
     budget: '$150 milhões',
     boxOffice: '$432 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=8YjFbMbfXaQ',
   },
   {
     id: 'eternals',
@@ -742,6 +786,7 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$402 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=x_me3xsvDgk',
   },
   {
     id: 'hawkeye',
@@ -764,6 +809,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Jeremy Renner', 'Hailee Steinfeld', 'Florence Pugh', 'Vera Farmiga', 'Tony Dalton', 'Vincent D\'Onofrio'],
     rating: 7.5,
     genres: ['Ação', 'Comédia', 'Crime'],
+    trailerUrl: 'https://www.youtube.com/watch?v=5VYb3B1ETlk',
   },
   {
     id: 'spider-man-no-way-home',
@@ -788,6 +834,9 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$1.921 bilhão',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=JfVOs4VSpmA',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=rt-2cxAiPJk',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=JfVOs4VSpmA',
   },
   {
     id: 'moon-knight',
@@ -810,6 +859,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Oscar Isaac', 'Ethan Hawke', 'May Calamawy', 'F. Murray Abraham', 'Gaspard Ulliel'],
     rating: 7.3,
     genres: ['Ação', 'Fantasia', 'Aventura'],
+    trailerUrl: 'https://www.youtube.com/watch?v=x7Krla_UxRg',
   },
   {
     id: 'doctor-strange-2',
@@ -834,6 +884,9 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$955 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=aWzlQ2N6qqg',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=Rf8LAYJSOL8',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=aWzlQ2N6qqg',
   },
   {
     id: 'ms-marvel',
@@ -856,6 +909,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Iman Vellani', 'Matt Lintz', 'Yasmeen Fletcher', 'Zenobia Shroff', 'Mohan Kapur', 'Saagar Shaikh'],
     rating: 6.2,
     genres: ['Ação', 'Comédia', 'Aventura'],
+    trailerUrl: 'https://www.youtube.com/watch?v=m9EX0f6V11Y',
   },
   {
     id: 'thor-love-thunder',
@@ -880,6 +934,7 @@ export const mcuData: MCUItem[] = [
     budget: '$250 milhões',
     boxOffice: '$761 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=tOHrWROGEgA',
   },
   {
     id: 'she-hulk',
@@ -902,6 +957,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Tatiana Maslany', 'Mark Ruffalo', 'Jameela Jamil', 'Tim Roth', 'Charlie Cox', 'Benedict Wong'],
     rating: 5.3,
     genres: ['Comédia', 'Ação', 'Drama'],
+    trailerUrl: 'https://www.youtube.com/watch?v=gDwfmwHjFzc',
   },
   {
     id: 'werewolf-by-night',
@@ -924,6 +980,7 @@ export const mcuData: MCUItem[] = [
     rating: 7.2,
     genres: ['Terror', 'Ação', 'Fantasia'],
     postCreditsScenes: 0,
+    trailerUrl: 'https://www.youtube.com/watch?v=tTT4HV8TWOk',
   },
   {
     id: 'black-panther-2',
@@ -948,6 +1005,7 @@ export const mcuData: MCUItem[] = [
     budget: '$250 milhões',
     boxOffice: '$859 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=_Z3QKkl1WyM',
   },
   {
     id: 'guardians-holiday',
@@ -970,6 +1028,7 @@ export const mcuData: MCUItem[] = [
     rating: 6.9,
     genres: ['Comédia', 'Ação', 'Ficção Científica'],
     postCreditsScenes: 0,
+    trailerUrl: 'https://www.youtube.com/watch?v=JNKMBgmMiY8',
   },
   // FASE 5
   {
@@ -995,6 +1054,7 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$476 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=ZlNFpri-Y40',
   },
   {
     id: 'guardians-3',
@@ -1019,6 +1079,9 @@ export const mcuData: MCUItem[] = [
     budget: '$250 milhões',
     boxOffice: '$845 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=u3V5KDHRQvk',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=JC3LUwAEbXI',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=u3V5KDHRQvk',
   },
   {
     id: 'secret-invasion',
@@ -1041,6 +1104,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Samuel L. Jackson', 'Ben Mendelsohn', 'Cobie Smulders', 'Olivia Colman', 'Emilia Clarke', 'Kingsley Ben-Adir', 'Don Cheadle'],
     rating: 5.9,
     genres: ['Ação', 'Drama', 'Ficção Científica'],
+    trailerUrl: 'https://www.youtube.com/watch?v=YjJVKhkYQOo',
   },
   {
     id: 'loki-s2',
@@ -1063,6 +1127,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Tom Hiddleston', 'Sophia Di Martino', 'Owen Wilson', 'Gugu Mbatha-Raw', 'Ke Huy Quan', 'Jonathan Majors'],
     rating: 8.0,
     genres: ['Ação', 'Fantasia', 'Ficção Científica'],
+    trailerUrl: 'https://www.youtube.com/watch?v=doCUJ2sKpDM',
   },
   {
     id: 'the-marvels',
@@ -1087,6 +1152,7 @@ export const mcuData: MCUItem[] = [
     budget: '$220 milhões',
     boxOffice: '$206 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=wS_qbDztgVY',
   },
   {
     id: 'what-if-s2',
@@ -1109,6 +1175,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Jeffrey Wright', 'Hayley Atwell', 'Josh Keaton', 'Lake Bell', 'Mick Wingert'],
     rating: 7.1,
     genres: ['Animação', 'Ação', 'Ficção Científica'],
+    trailerUrl: 'https://www.youtube.com/watch?v=o2YDSVAP7os',
   },
   {
     id: 'echo',
@@ -1131,6 +1198,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Alaqua Cox', 'Chaske Spencer', 'Tantoo Cardinal', 'Devery Jacobs', 'Vincent D\'Onofrio', 'Charlie Cox'],
     rating: 5.6,
     genres: ['Ação', 'Crime', 'Drama'],
+    trailerUrl: 'https://www.youtube.com/watch?v=4laB49K4bjQ',
   },
   {
     id: 'deadpool-3',
@@ -1155,6 +1223,9 @@ export const mcuData: MCUItem[] = [
     budget: '$200 milhões',
     boxOffice: '$1.338 bilhão',
     postCreditsScenes: 1,
+    trailerUrl: 'https://www.youtube.com/watch?v=73_1biulkYk',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=inFvZ6_OwzU',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=73_1biulkYk',
   },
   {
     id: 'agatha',
@@ -1177,6 +1248,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Kathryn Hahn', 'Joe Locke', 'Sasheer Zamata', 'Ali Ahn', 'Patti LuPone', 'Aubrey Plaza'],
     rating: 7.0,
     genres: ['Fantasia', 'Comédia', 'Terror'],
+    trailerUrl: 'https://www.youtube.com/watch?v=oI_hHB_kZBY',
   },
   // FASE 6
   {
@@ -1201,6 +1273,9 @@ export const mcuData: MCUItem[] = [
     genres: ['Ação', 'Aventura', 'Thriller'],
     budget: '$180 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=6X4bJ0srJVI',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=paTW3wOyIYw',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=6X4bJ0srJVI',
   },
   {
     id: 'daredevil-born-again',
@@ -1223,6 +1298,7 @@ export const mcuData: MCUItem[] = [
     cast: ['Charlie Cox', 'Vincent D\'Onofrio', 'Jon Bernthal', 'Deborah Ann Woll', 'Elden Henson', 'Wilson Bethel'],
     rating: 0,
     genres: ['Ação', 'Crime', 'Drama'],
+    trailerUrl: 'https://www.youtube.com/watch?v=hBqYn-14j0A',
   },
   {
     id: 'thunderbolts',
@@ -1246,6 +1322,9 @@ export const mcuData: MCUItem[] = [
     genres: ['Ação', 'Aventura', 'Ficção Científica'],
     budget: '$200 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=lTzuc98dZqM',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=iVlwwNF9K1U',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=lTzuc98dZqM',
   },
   {
     id: 'ironheart',
@@ -1291,6 +1370,9 @@ export const mcuData: MCUItem[] = [
     genres: ['Ação', 'Aventura', 'Ficção Científica'],
     budget: '$250 milhões',
     postCreditsScenes: 2,
+    trailerUrl: 'https://www.youtube.com/watch?v=Hy38Xn7GaWA',
+    trailerUrlDublado: 'https://www.youtube.com/watch?v=7d9bQdkgwOw',
+    trailerUrlLegendado: 'https://www.youtube.com/watch?v=Hy38Xn7GaWA',
   },
   {
     id: 'avengers-doomsday',

@@ -12,7 +12,8 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit - MCU Tracker\n\n- Next.js 15 com App Router e TypeScript\n- Sistema de autenticação com MongoDB e JWT\n- Interface estilo Netflix com Framer Motion\n- Dados completos de 55+ produções do MCU\n- Modal de detalhes com sinopse, elenco, direção\n- Filtros por tipo \\(filmes/séries\\) e ordem \\(cronológica/lançamento\\)\n- Progresso salvo na nuvem ou localStorage\n- Design responsivo e animações suaves\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git remote set-url:*)",
       "Bash(git branch:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nModernização completa da interface\n\nNovas funcionalidades:\n- Hero Section animado com contagem regressiva para Doomsday\n- Sistema de busca com atalho Ctrl+K\n- Filtros avançados por fase do MCU\n- Sistema de favoritos \\(coração nos cards\\)\n- Cards de estatísticas \\(filmes, séries, horas assistidas\\)\n- Loading skeletons durante carregamento\n- Efeitos visuais modernos \\(glassmorphism, gradientes\\)\n\nMelhorias de UX:\n- Cards com animações mais suaves\n- Hover effects aprimorados\n- Layout responsivo melhorado\n- PWA configurado para instalação mobile\n- SEO e Open Graph otimizados\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }

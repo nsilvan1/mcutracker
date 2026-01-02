@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { mcuData, MCUItem } from '@/data/mcu-data';
+import { useAdminChanges } from '@/hooks/useAdminChanges';
 import Header from '@/components/Header';
 import OrderToggle from '@/components/OrderToggle';
 import FilterBar from '@/components/FilterBar';
@@ -39,6 +40,9 @@ export default function Home() {
   const [selectedPhases, setSelectedPhases] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // Usar dados com alterações do admin
+  const { items: mcuItems, isLoaded: adminDataLoaded } = useAdminChanges();
 
   // Load user and token from localStorage
   useEffect(() => {
@@ -213,7 +217,7 @@ export default function Home() {
 
   // Filter and sort data
   const filteredAndSortedData = useMemo(() => {
-    let data = [...mcuData];
+    let data = [...mcuItems];
 
     // Search filter
     if (searchQuery) {
@@ -248,18 +252,18 @@ export default function Home() {
     }
 
     return data;
-  }, [order, filter, searchQuery, selectedPhases]);
+  }, [order, filter, searchQuery, selectedPhases, mcuItems]);
 
   // Stats calculations
-  const totalMovies = mcuData.filter((item) => item.type === 'movie').length;
-  const totalSeries = mcuData.filter((item) => item.type === 'series').length;
-  const watchedMovies = mcuData.filter((item) => item.type === 'movie' && watchedItems.has(item.id)).length;
-  const watchedSeries = mcuData.filter((item) => item.type === 'series' && watchedItems.has(item.id)).length;
+  const totalMovies = mcuItems.filter((item) => item.type === 'movie').length;
+  const totalSeries = mcuItems.filter((item) => item.type === 'series').length;
+  const watchedMovies = mcuItems.filter((item) => item.type === 'movie' && watchedItems.has(item.id)).length;
+  const watchedSeries = mcuItems.filter((item) => item.type === 'series' && watchedItems.has(item.id)).length;
 
   // Calculate total hours watched
   const totalHours = useMemo(() => {
     let minutes = 0;
-    mcuData.forEach((item) => {
+    mcuItems.forEach((item) => {
       if (watchedItems.has(item.id) && item.duration) {
         const match = item.duration.match(/(\d+)h\s*(\d+)?m?/);
         if (match) {
@@ -273,7 +277,7 @@ export default function Home() {
       }
     });
     return Math.round(minutes / 60);
-  }, [watchedItems]);
+  }, [watchedItems, mcuItems]);
 
   const totalItems = filteredAndSortedData.length;
   const watchedCount = filteredAndSortedData.filter((item) => watchedItems.has(item.id)).length;

@@ -6,6 +6,7 @@ export interface IUser {
   email: string;
   password: string;
   watchedItems: string[];
+  isAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,6 +33,10 @@ const UserSchema = new Schema<IUser>(
     watchedItems: {
       type: [String],
       default: [],
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
     },
   },
   {

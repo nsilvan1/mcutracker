@@ -1,8 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { MCUItem } from '@/data/mcu-data';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, Calendar, Star, Film, Tv, Play, Check, Clapperboard, Users, DollarSign, TrendingUp } from 'lucide-react';
+import { X, Clock, Calendar, Star, Film, Tv, Play, Check, Clapperboard, Users, DollarSign, TrendingUp, Youtube, ExternalLink, Languages } from 'lucide-react';
 import Image from 'next/image';
 
 interface DetailModalProps {
@@ -13,8 +14,50 @@ interface DetailModalProps {
   onToggleWatched: (id: string) => void;
 }
 
+// Função para extrair o ID do vídeo do YouTube
+function getYouTubeId(url: string): string | null {
+  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
+}
+
+type TrailerLanguage = 'dublado' | 'legendado';
+
 export default function DetailModal({ item, isOpen, isWatched, onClose, onToggleWatched }: DetailModalProps) {
+  const [showTrailer, setShowTrailer] = useState(false);
+  const [trailerLanguage, setTrailerLanguage] = useState<TrailerLanguage>('dublado');
+
   if (!item) return null;
+
+  // Determinar qual URL usar baseado no idioma selecionado
+  const getTrailerUrl = () => {
+    if (trailerLanguage === 'dublado' && item.trailerUrlDublado) {
+      return item.trailerUrlDublado;
+    }
+    if (trailerLanguage === 'legendado' && item.trailerUrlLegendado) {
+      return item.trailerUrlLegendado;
+    }
+    // Fallback para trailerUrl original se não houver versão específica
+    return item.trailerUrl;
+  };
+
+  const currentTrailerUrl = getTrailerUrl();
+  const youtubeId = currentTrailerUrl ? getYouTubeId(currentTrailerUrl) : null;
+
+  // Verificar se há trailers em ambos os idiomas
+  const hasDublado = !!(item.trailerUrlDublado || item.trailerUrl);
+  const hasLegendado = !!item.trailerUrlLegendado;
+  const hasBothLanguages = hasDublado && hasLegendado;
+
+  const handleClose = () => {
+    setShowTrailer(false);
+    setTrailerLanguage('dublado');
+    onClose();
+  };
+
+  const handleLanguageChange = (lang: TrailerLanguage) => {
+    setTrailerLanguage(lang);
+  };
 
   return (
     <AnimatePresence>
@@ -25,7 +68,7 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
           />
 
@@ -39,7 +82,7 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
           >
             {/* Close button */}
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="absolute top-4 right-4 z-20 bg-black/60 hover:bg-black/80 rounded-full p-2 transition-colors"
             >
               <X className="w-5 h-5 text-white" />
@@ -47,85 +90,150 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
 
             {/* Scrollable content */}
             <div className="overflow-y-auto flex-1">
-              {/* Hero section with backdrop */}
+              {/* Hero section with backdrop or trailer */}
               <div className="relative h-64 md:h-80 lg:h-96">
-                <Image
-                  src={item.backdropUrl || item.imageUrl}
-                  alt={item.title}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-marvel-dark via-marvel-dark/60 to-transparent" />
+                {showTrailer && youtubeId ? (
+                  <div className="absolute inset-0 bg-black">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`}
+                      title={`Trailer - ${item.title}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                    {/* Controls overlay */}
+                    <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
+                      <button
+                        onClick={() => setShowTrailer(false)}
+                        className="bg-black/60 hover:bg-black/80 rounded-full p-2 transition-colors flex items-center gap-2"
+                      >
+                        <X className="w-4 h-4 text-white" />
+                        <span className="text-white text-sm pr-2">Fechar trailer</span>
+                      </button>
 
-                {/* Title overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                  <div className="flex items-start gap-4">
-                    {/* Poster */}
-                    <div className="hidden md:block relative w-32 lg:w-40 aspect-[2/3] rounded-lg overflow-hidden shadow-xl border-2 border-white/20 flex-shrink-0">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                      />
+                      {/* Language toggle */}
+                      {hasBothLanguages && (
+                        <div className="flex items-center gap-2 bg-black/60 rounded-full p-1">
+                          <button
+                            onClick={() => handleLanguageChange('dublado')}
+                            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                              trailerLanguage === 'dublado'
+                                ? 'bg-marvel-red text-white'
+                                : 'text-white/70 hover:text-white'
+                            }`}
+                          >
+                            Dublado
+                          </button>
+                          <button
+                            onClick={() => handleLanguageChange('legendado')}
+                            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                              trailerLanguage === 'legendado'
+                                ? 'bg-marvel-red text-white'
+                                : 'text-white/70 hover:text-white'
+                            }`}
+                          >
+                            Legendado
+                          </button>
+                        </div>
+                      )}
                     </div>
+                  </div>
+                ) : (
+                  <>
+                    <Image
+                      src={item.backdropUrl || item.imageUrl}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-marvel-dark via-marvel-dark/60 to-transparent" />
 
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-marvel-red px-2 py-1 rounded text-xs font-bold">
-                          Fase {item.phase}
-                        </span>
-                        <span className="bg-white/20 px-2 py-1 rounded text-xs font-semibold">
-                          {item.type === 'movie' ? 'Filme' : 'Série'}
-                        </span>
-                        {item.postCreditsScenes && item.postCreditsScenes > 0 && (
-                          <span className="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs font-semibold">
-                            {item.postCreditsScenes} cena{item.postCreditsScenes > 1 ? 's' : ''} pós-créditos
-                          </span>
-                        )}
+                    {/* Play trailer button */}
+                    {youtubeId && (
+                      <button
+                        onClick={() => setShowTrailer(true)}
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 group"
+                      >
+                        <div className="flex items-center gap-3 px-6 py-3 bg-marvel-red hover:bg-red-600 rounded-full transition-all transform group-hover:scale-105 shadow-lg">
+                          <Play className="w-6 h-6 text-white fill-white" />
+                          <span className="text-white font-semibold">Ver Trailer</span>
+                        </div>
+                      </button>
+                    )}
+                  </>
+                )}
+
+                {/* Title overlay - only show when not playing trailer */}
+                {!showTrailer && (
+                  <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                    <div className="flex items-start gap-4">
+                      {/* Poster */}
+                      <div className="hidden md:block relative w-32 lg:w-40 aspect-[2/3] rounded-lg overflow-hidden shadow-xl border-2 border-white/20 flex-shrink-0">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                        />
                       </div>
 
-                      <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1">
-                        {item.title}
-                      </h1>
-
-                      {item.originalTitle !== item.title && (
-                        <p className="text-gray-400 text-sm md:text-base mb-3">
-                          {item.originalTitle}
-                        </p>
-                      )}
-
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-gray-300">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>{item.releaseYear}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="bg-marvel-red px-2 py-1 rounded text-xs font-bold">
+                            Fase {item.phase}
+                          </span>
+                          <span className="bg-white/20 px-2 py-1 rounded text-xs font-semibold">
+                            {item.type === 'movie' ? 'Filme' : 'Série'}
+                          </span>
+                          {item.postCreditsScenes && item.postCreditsScenes > 0 && (
+                            <span className="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs font-semibold">
+                              {item.postCreditsScenes} cena{item.postCreditsScenes > 1 ? 's' : ''} pós-créditos
+                            </span>
+                          )}
                         </div>
 
-                        {item.duration && (
-                          <div className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            <span>{item.duration}</span>
-                          </div>
+                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1">
+                          {item.title}
+                        </h1>
+
+                        {item.originalTitle !== item.title && (
+                          <p className="text-gray-400 text-sm md:text-base mb-3">
+                            {item.originalTitle}
+                          </p>
                         )}
 
-                        {item.episodes && (
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-300">
                           <div className="flex items-center gap-1">
-                            <Tv className="w-4 h-4" />
-                            <span>{item.episodes} episódios</span>
+                            <Calendar className="w-4 h-4" />
+                            <span>{item.releaseYear}</span>
                           </div>
-                        )}
 
-                        {item.rating > 0 && (
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                            <span className="font-semibold">{item.rating.toFixed(1)}</span>
-                          </div>
-                        )}
+                          {item.duration && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-4 h-4" />
+                              <span>{item.duration}</span>
+                            </div>
+                          )}
+
+                          {item.episodes && (
+                            <div className="flex items-center gap-1">
+                              <Tv className="w-4 h-4" />
+                              <span>{item.episodes} episódios</span>
+                            </div>
+                          )}
+
+                          {item.rating > 0 && (
+                            <div className="flex items-center gap-1">
+                              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                              <span className="font-semibold">{item.rating.toFixed(1)}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Content */}
@@ -153,16 +261,84 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                     )}
                   </button>
 
+                  {/* Trailer buttons with language options */}
+                  {youtubeId && !showTrailer && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setShowTrailer(true)}
+                        className="flex items-center gap-2 px-6 py-3 rounded-lg font-semibold bg-red-600 hover:bg-red-700 text-white transition-all"
+                      >
+                        <Youtube className="w-5 h-5" />
+                        Ver Trailer
+                      </button>
+
+                      {/* Language selector for trailers */}
+                      {hasBothLanguages && (
+                        <div className="flex items-center gap-1 bg-white/10 rounded-lg p-1">
+                          <button
+                            onClick={() => handleLanguageChange('dublado')}
+                            className={`px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-1 ${
+                              trailerLanguage === 'dublado'
+                                ? 'bg-marvel-red text-white'
+                                : 'text-white/70 hover:text-white hover:bg-white/10'
+                            }`}
+                            title="Trailer Dublado"
+                          >
+                            <Languages className="w-4 h-4" />
+                            DUB
+                          </button>
+                          <button
+                            onClick={() => handleLanguageChange('legendado')}
+                            className={`px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-1 ${
+                              trailerLanguage === 'legendado'
+                                ? 'bg-marvel-red text-white'
+                                : 'text-white/70 hover:text-white hover:bg-white/10'
+                            }`}
+                            title="Trailer Legendado"
+                          >
+                            <Languages className="w-4 h-4" />
+                            LEG
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* YouTube link */}
+                  {currentTrailerUrl && (
+                    <a
+                      href={currentTrailerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-3 rounded-lg font-semibold bg-white/10 hover:bg-white/20 text-white transition-all"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Abrir no YouTube
+                    </a>
+                  )}
+
                   {item.whereToWatch.length > 0 && (
                     <div className="flex items-center gap-2">
                       <span className="text-gray-400 text-sm">Disponível em:</span>
                       {item.whereToWatch.map((platform) => (
-                        <span
-                          key={platform}
-                          className="bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-                        >
-                          {platform}
-                        </span>
+                        platform === 'Disney+' ? (
+                          <a
+                            key={platform}
+                            href="https://www.disneyplus.com/pt-br/brand/marvel"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-white"
+                          >
+                            {platform}
+                          </a>
+                        ) : (
+                          <span
+                            key={platform}
+                            className="bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                          >
+                            {platform}
+                          </span>
+                        )
                       ))}
                     </div>
                   )}
