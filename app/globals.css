@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --marvel-red: #E62429;
+  --marvel-dark: #0A0A0A;
+  --marvel-gray: #1A1A1A;
+  --marvel-light-gray: #2A2A2A;
+}
+
+body {
+  background-color: var(--marvel-dark);
+  color: white;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--marvel-gray);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--marvel-red);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c41e22;
+}
+
+/* Smooth animations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

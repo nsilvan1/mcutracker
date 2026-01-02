@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout:*)",
+      "Bash(ping:*)",
+      "Bash(taskkill:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit - MCU Tracker\n\n- Next.js 15 com App Router e TypeScript\n- Sistema de autenticação com MongoDB e JWT\n- Interface estilo Netflix com Framer Motion\n- Dados completos de 55+ produções do MCU\n- Modal de detalhes com sinopse, elenco, direção\n- Filtros por tipo \\(filmes/séries\\) e ordem \\(cronológica/lançamento\\)\n- Progresso salvo na nuvem ou localStorage\n- Design responsivo e animações suaves\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}
