@@ -16,8 +16,10 @@ import PhaseFilter from '@/components/PhaseFilter';
 import AdvancedFilters from '@/components/AdvancedFilters';
 import AchievementsModal from '@/components/AchievementsModal';
 import ShareProgress from '@/components/ShareProgress';
+import WhatsNewModal, { CURRENT_VERSION } from '@/components/WhatsNewModal';
+import OnboardingTutorial from '@/components/OnboardingTutorial';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SlidersHorizontal, X, Trophy } from 'lucide-react';
+import { SlidersHorizontal, X, Trophy, HelpCircle } from 'lucide-react';
 
 interface User {
   id: string;
@@ -44,6 +46,8 @@ export default function Home() {
   const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
+  const [isWhatsNewOpen, setIsWhatsNewOpen] = useState(false);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Usar dados com alterações do admin
@@ -73,7 +77,109 @@ export default function Home() {
 
     // Simulate loading for skeleton effect
     setTimeout(() => setIsLoading(false), 800);
+
+    // Verificar se deve mostrar modais de novidades/tutorial
+    checkShowModals();
   }, []);
+
+  // Verificar se deve mostrar modais
+  const checkShowModals = async () => {
+    const savedToken = localStorage.getItem('mcu-token');
+
+    if (savedToken) {
+      // Usuário logado - verificar preferências no servidor
+      try {
+        const response = await fetch('/api/user/preferences', {
+          headers: {
+            Authorization: `Bearer ${savedToken}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const prefs = data.preferences;
+
+          // Mostrar novidades se versão é diferente
+          if (prefs.lastSeenVersion !== CURRENT_VERSION && !prefs.hideWhatsNew) {
+            setTimeout(() => setIsWhatsNewOpen(true), 1000);
+          }
+
+          // Mostrar onboarding se nunca viu
+          if (!prefs.hideOnboarding && prefs.lastSeenVersion === '0.0.0') {
+            setTimeout(() => setIsOnboardingOpen(true), 1500);
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao verificar preferências:', error);
+      }
+    } else {
+      // Usuário não logado - usar localStorage
+      const lastSeenVersion = localStorage.getItem('mcu-last-seen-version');
+      const hideWhatsNew = localStorage.getItem('mcu-hide-whats-new') === 'true';
+      const hideOnboarding = localStorage.getItem('mcu-hide-onboarding') === 'true';
+
+      // Mostrar novidades se versão é diferente
+      if (lastSeenVersion !== CURRENT_VERSION && !hideWhatsNew) {
+        setTimeout(() => setIsWhatsNewOpen(true), 1000);
+      }
+
+      // Mostrar onboarding se é primeira visita
+      if (!hideOnboarding && !lastSeenVersion) {
+        setTimeout(() => setIsOnboardingOpen(true), 1500);
+      }
+
+      // Salvar versão atual
+      localStorage.setItem('mcu-last-seen-version', CURRENT_VERSION);
+    }
+  };
+
+  // Salvar preferência de não mostrar novidades
+  const handleDontShowWhatsNew = async () => {
+    if (token) {
+      try {
+        await fetch('/api/user/preferences', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            hideWhatsNew: true,
+            lastSeenVersion: CURRENT_VERSION,
+          }),
+        });
+      } catch (error) {
+        console.error('Erro ao salvar preferência:', error);
+      }
+    } else {
+      localStorage.setItem('mcu-hide-whats-new', 'true');
+      localStorage.setItem('mcu-last-seen-version', CURRENT_VERSION);
+    }
+  };
+
+  // Salvar preferência de não mostrar onboarding
+  const handleDontShowOnboarding = async () => {
+    if (token) {
+      try {
+        await fetch('/api/user/preferences', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            hideOnboarding: true,
+            lastSeenVersion: CURRENT_VERSION,
+          }),
+        });
+      } catch (error) {
+        console.error('Erro ao salvar preferência:', error);
+      }
+    } else {
+      localStorage.setItem('mcu-hide-onboarding', 'true');
+      localStorage.setItem('mcu-last-seen-version', CURRENT_VERSION);
+    }
+  };
 
   // Load user progress from API
   const loadUserProgress = async (authToken: string) => {
@@ -333,6 +439,22 @@ export default function Home() {
         watchedItems={watchedItems}
       />
 
+      {/* What's New Modal */}
+      <WhatsNewModal
+        isOpen={isWhatsNewOpen}
+        onClose={() => setIsWhatsNewOpen(false)}
+        onDontShowAgain={handleDontShowWhatsNew}
+        isLoggedIn={!!user}
+      />
+
+      {/* Onboarding Tutorial */}
+      <OnboardingTutorial
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+        onDontShowAgain={handleDontShowOnboarding}
+        isLoggedIn={!!user}
+      />
+
       {/* Hero Section */}
       <HeroSection
         watchedCount={watchedItems.size}
@@ -379,6 +501,15 @@ export default function Home() {
                 totalCount={mcuData.length}
                 userName={user?.name}
               />
+
+              {/* Help button */}
+              <button
+                onClick={() => setIsOnboardingOpen(true)}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10 transition-all"
+                title="Como usar o site"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </button>
             </div>
 
             <div className="text-sm text-gray-400">

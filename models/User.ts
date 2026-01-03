@@ -1,5 +1,12 @@
 import mongoose, { Schema, Model } from 'mongoose';
 
+export interface IUserPreferences {
+  hideWhatsNew: boolean;
+  hideOnboarding: boolean;
+  hideSpoilerWarning: boolean;
+  lastSeenVersion: string;
+}
+
 export interface IUser {
   _id: mongoose.Types.ObjectId;
   name: string;
@@ -7,6 +14,7 @@ export interface IUser {
   password: string;
   watchedItems: string[];
   isAdmin: boolean;
+  preferences: IUserPreferences;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,6 +45,20 @@ const UserSchema = new Schema<IUser>(
     isAdmin: {
       type: Boolean,
       default: false,
+    },
+    preferences: {
+      type: {
+        hideWhatsNew: { type: Boolean, default: false },
+        hideOnboarding: { type: Boolean, default: false },
+        hideSpoilerWarning: { type: Boolean, default: false },
+        lastSeenVersion: { type: String, default: '0.0.0' },
+      },
+      default: {
+        hideWhatsNew: false,
+        hideOnboarding: false,
+        hideSpoilerWarning: false,
+        lastSeenVersion: '0.0.0',
+      },
     },
   },
   {
