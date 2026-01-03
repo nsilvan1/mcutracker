@@ -134,7 +134,7 @@ export default function NotFound() {
           transition={{ delay: 1 }}
           className="mt-12 text-gray-600 text-xs"
         >
-          "Eu sou inevitável" - Página 404
+          {'"Eu sou inevitável" - Página 404'}
         </motion.p>
       </div>
     </div>
