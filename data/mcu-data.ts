@@ -1380,7 +1380,7 @@ export const mcuData: MCUItem[] = [
     originalTitle: 'Avengers: Doomsday',
     type: 'movie',
     releaseYear: 2026,
-    releaseDate: '2026-05-01',
+    releaseDate: '2026-12-18',
     chronologicalOrder: 54,
     releaseOrder: 55,
     phase: 6,

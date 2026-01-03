@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Calendar, Sparkles } from 'lucide-react';
 
@@ -9,11 +10,54 @@ interface HeroSectionProps {
   onScrollToContent: () => void;
 }
 
+interface Countdown {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
 export default function HeroSection({ watchedCount, totalCount, onScrollToContent }: HeroSectionProps) {
   const percentage = Math.round((watchedCount / totalCount) * 100);
-  const daysUntilDoomsday = Math.ceil(
-    (new Date('2026-05-01').getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
-  );
+  const targetDate = new Date('2026-12-18T00:00:00').getTime();
+
+  const [countdown, setCountdown] = useState<Countdown>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        setCountdown({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((difference % (1000 * 60)) / 1000),
+        });
+      } else {
+        setCountdown({
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+        });
+      }
+    };
+
+    // Atualizar imediatamente
+    updateCountdown();
+
+    // Atualizar a cada segundo
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [targetDate]);
 
   return (
     <div className="relative min-h-[60vh] md:min-h-[70vh] flex items-center justify-center overflow-hidden">
@@ -79,60 +123,81 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
           </p>
 
           {/* Stats */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+            {/* Progress Card */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="flex items-center gap-3 px-5 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl"
+              className="flex items-center gap-4 px-6 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl"
             >
-              <div className="relative w-12 h-12">
-                <svg className="w-12 h-12 transform -rotate-90">
+              <div className="relative w-14 h-14">
+                <svg className="w-14 h-14 transform -rotate-90">
                   <circle
-                    cx="24"
-                    cy="24"
-                    r="20"
+                    cx="28"
+                    cy="28"
+                    r="24"
                     stroke="currentColor"
                     strokeWidth="4"
                     fill="none"
                     className="text-white/10"
                   />
                   <motion.circle
-                    cx="24"
-                    cy="24"
-                    r="20"
+                    cx="28"
+                    cy="28"
+                    r="24"
                     stroke="currentColor"
                     strokeWidth="4"
                     fill="none"
                     strokeLinecap="round"
                     className="text-marvel-red"
-                    initial={{ strokeDasharray: '0 126' }}
-                    animate={{ strokeDasharray: `${(percentage / 100) * 126} 126` }}
+                    initial={{ strokeDasharray: '0 151' }}
+                    animate={{ strokeDasharray: `${(percentage / 100) * 151} 151` }}
                     transition={{ duration: 1, delay: 0.5 }}
                   />
                 </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">
+                <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">
                   {percentage}%
                 </span>
               </div>
               <div className="text-left">
-                <p className="text-white font-bold">{watchedCount} de {totalCount}</p>
+                <p className="text-white font-bold text-lg">{watchedCount} de {totalCount}</p>
                 <p className="text-gray-500 text-sm">assistidos</p>
               </div>
             </motion.div>
 
+            {/* Countdown Card */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
-              className="flex items-center gap-3 px-5 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl"
+              className="px-6 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl"
             >
-              <div className="p-2.5 bg-marvel-red/20 rounded-xl">
-                <Calendar className="w-6 h-6 text-marvel-red" />
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Calendar className="w-4 h-4 text-marvel-red" />
+                <p className="text-gray-400 text-sm font-medium">até Doomsday</p>
               </div>
-              <div className="text-left">
-                <p className="text-white font-bold">{daysUntilDoomsday} dias</p>
-                <p className="text-gray-500 text-sm">até Doomsday</p>
+              <div className="flex items-baseline justify-center gap-1">
+                {[
+                  { value: countdown.days, label: 'd' },
+                  { value: countdown.hours, label: 'h' },
+                  { value: countdown.minutes, label: 'm' },
+                  { value: countdown.seconds, label: 's' },
+                ].map((item, index) => (
+                  <div key={item.label} className="flex items-baseline">
+                    {index > 0 && <span className="text-gray-600 text-lg mx-0.5">:</span>}
+                    <motion.span
+                      key={item.value}
+                      initial={{ scale: 1.1, opacity: 0.7 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-2xl font-bold text-white tabular-nums"
+                    >
+                      {item.value.toString().padStart(2, '0')}
+                    </motion.span>
+                    <span className="text-xs text-gray-500 ml-0.5">{item.label}</span>
+                  </div>
+                ))}
               </div>
             </motion.div>
           </div>
@@ -142,13 +207,14 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(229, 9, 20, 0.4)' }}
+            whileTap={{ scale: 0.98 }}
             onClick={onScrollToContent}
-            className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-marvel-red to-red-600 rounded-xl font-bold text-white shadow-lg shadow-marvel-red/30 hover:shadow-xl hover:shadow-marvel-red/40 transition-all"
+            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-marvel-red via-red-600 to-marvel-red bg-[length:200%_100%] hover:bg-right rounded-2xl font-bold text-lg text-white shadow-xl shadow-marvel-red/25 transition-all duration-500 overflow-hidden"
           >
-            <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span>Começar Maratona</span>
+            <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            <Play className="w-6 h-6 fill-current group-hover:scale-110 transition-transform duration-300" />
+            <span className="relative">Começar Maratona</span>
           </motion.button>
         </motion.div>
       </div>
