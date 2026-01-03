@@ -148,19 +148,6 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                       priority
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-marvel-dark via-marvel-dark/60 to-transparent" />
-
-                    {/* Play trailer button */}
-                    {youtubeId && (
-                      <button
-                        onClick={() => setShowTrailer(true)}
-                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 group"
-                      >
-                        <div className="flex items-center gap-3 px-6 py-3 bg-marvel-red hover:bg-red-600 rounded-full transition-all transform group-hover:scale-105 shadow-lg">
-                          <Play className="w-6 h-6 text-white fill-white" />
-                          <span className="text-white font-semibold">Ver Trailer</span>
-                        </div>
-                      </button>
-                    )}
                   </>
                 )}
 
@@ -239,87 +226,85 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
               {/* Content */}
               <div className="p-6 md:p-8 space-y-6">
                 {/* Action buttons */}
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* Watched button */}
                   <button
                     onClick={() => onToggleWatched(item.id)}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                       isWatched
-                        ? 'bg-green-500 hover:bg-green-600 text-white'
-                        : 'bg-white hover:bg-gray-200 text-black'
+                        ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30'
+                        : 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
                     }`}
                   >
                     {isWatched ? (
                       <>
-                        <Check className="w-5 h-5" />
+                        <Check className="w-4 h-4" />
                         Assistido
                       </>
                     ) : (
                       <>
-                        <Play className="w-5 h-5" />
+                        <Play className="w-4 h-4" />
                         Marcar como Assistido
                       </>
                     )}
                   </button>
 
-                  {/* Trailer buttons with language options */}
+                  {/* Trailer button with language options */}
                   {youtubeId && !showTrailer && (
-                    <div className="flex items-center gap-2">
+                    <>
                       <button
                         onClick={() => setShowTrailer(true)}
-                        className="flex items-center gap-2 px-6 py-3 rounded-lg font-semibold bg-red-600 hover:bg-red-700 text-white transition-all"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/30 transition-all"
                       >
-                        <Youtube className="w-5 h-5" />
-                        Ver Trailer
+                        <Youtube className="w-4 h-4" />
+                        Trailer
                       </button>
 
-                      {/* Language selector for trailers */}
+                      {/* Language selector */}
                       {hasBothLanguages && (
-                        <div className="flex items-center gap-1 bg-white/10 rounded-lg p-1">
+                        <div className="flex items-center bg-white/5 rounded-full p-0.5 border border-white/10">
                           <button
                             onClick={() => handleLanguageChange('dublado')}
-                            className={`px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-1 ${
+                            className={`px-2.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                               trailerLanguage === 'dublado'
                                 ? 'bg-marvel-red text-white'
-                                : 'text-white/70 hover:text-white hover:bg-white/10'
+                                : 'text-white/60 hover:text-white'
                             }`}
-                            title="Trailer Dublado"
                           >
-                            <Languages className="w-4 h-4" />
                             DUB
                           </button>
                           <button
                             onClick={() => handleLanguageChange('legendado')}
-                            className={`px-3 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-1 ${
+                            className={`px-2.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                               trailerLanguage === 'legendado'
                                 ? 'bg-marvel-red text-white'
-                                : 'text-white/70 hover:text-white hover:bg-white/10'
+                                : 'text-white/60 hover:text-white'
                             }`}
-                            title="Trailer Legendado"
                           >
-                            <Languages className="w-4 h-4" />
                             LEG
                           </button>
                         </div>
                       )}
-                    </div>
+                    </>
                   )}
 
-                  {/* YouTube link */}
+                  {/* YouTube external link */}
                   {currentTrailerUrl && (
                     <a
                       href={currentTrailerUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-3 rounded-lg font-semibold bg-white/10 hover:bg-white/20 text-white transition-all"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium bg-white/5 text-white/70 border border-white/10 hover:bg-white/10 hover:text-white transition-all"
                     >
-                      <ExternalLink className="w-4 h-4" />
-                      Abrir no YouTube
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      YouTube
                     </a>
                   )}
 
+                  {/* Streaming platforms */}
                   {item.whereToWatch.length > 0 && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400 text-sm">Disponível em:</span>
+                    <>
+                      <span className="text-white/30 mx-1">|</span>
                       {item.whereToWatch.map((platform) => (
                         platform === 'Disney+' ? (
                           <a
@@ -327,20 +312,20 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                             href="https://www.disneyplus.com/pt-br/brand/marvel"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-white"
+                            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600/30 transition-all"
                           >
                             {platform}
                           </a>
                         ) : (
                           <span
                             key={platform}
-                            className="bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                            className="px-3 py-2 rounded-full text-xs font-medium bg-white/5 text-white/70 border border-white/10"
                           >
                             {platform}
                           </span>
                         )
                       ))}
-                    </div>
+                    </>
                   )}
                 </div>
 
