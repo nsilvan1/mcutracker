@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { MCUItem } from '@/data/mcu-data';
+import { MCUItem, AgeRating } from '@/data/mcu-data';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, Calendar, Star, Film, Tv, Play, Check, Clapperboard, Users, DollarSign, TrendingUp, Youtube, ExternalLink, Languages } from 'lucide-react';
+import { X, Clock, Calendar, Star, Tv, Play, Check, Clapperboard, Users, DollarSign, TrendingUp, ExternalLink, Hash, ListOrdered } from 'lucide-react';
 import Image from 'next/image';
 
 interface DetailModalProps {
@@ -21,6 +21,22 @@ function getYouTubeId(url: string): string | null {
   return match ? match[1] : null;
 }
 
+// Cores para classificação etária (padrão brasileiro)
+const ageRatingConfig: Record<AgeRating, { bg: string; text: string; label: string }> = {
+  'L': { bg: 'bg-green-500', text: 'text-white', label: 'L' },
+  '10': { bg: 'bg-blue-500', text: 'text-white', label: '10' },
+  '12': { bg: 'bg-yellow-500', text: 'text-black', label: '12' },
+  '14': { bg: 'bg-orange-500', text: 'text-white', label: '14' },
+  '16': { bg: 'bg-red-500', text: 'text-white', label: '16' },
+  '18': { bg: 'bg-black', text: 'text-white', label: '18' },
+};
+
+// Classificação etária padrão para filmes do MCU (maioria é 12 anos)
+const getAgeRating = (item: MCUItem): AgeRating => {
+  if (item.ageRating) return item.ageRating;
+  return '12';
+};
+
 type TrailerLanguage = 'dublado' | 'legendado';
 
 export default function DetailModal({ item, isOpen, isWatched, onClose, onToggleWatched }: DetailModalProps) {
@@ -28,6 +44,9 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
   const [trailerLanguage, setTrailerLanguage] = useState<TrailerLanguage>('dublado');
 
   if (!item) return null;
+
+  const ageRating = getAgeRating(item);
+  const ageConfig = ageRatingConfig[ageRating];
 
   // Determinar qual URL usar baseado no idioma selecionado
   const getTrailerUrl = () => {
@@ -37,14 +56,12 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
     if (trailerLanguage === 'legendado' && item.trailerUrlLegendado) {
       return item.trailerUrlLegendado;
     }
-    // Fallback para trailerUrl original se não houver versão específica
     return item.trailerUrl;
   };
 
   const currentTrailerUrl = getTrailerUrl();
   const youtubeId = currentTrailerUrl ? getYouTubeId(currentTrailerUrl) : null;
 
-  // Verificar se há trailers em ambos os idiomas
   const hasDublado = !!(item.trailerUrlDublado || item.trailerUrl);
   const hasLegendado = !!item.trailerUrlLegendado;
   const hasBothLanguages = hasDublado && hasLegendado;
@@ -101,41 +118,43 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                       allowFullScreen
                       className="w-full h-full"
                     />
-                    {/* Controls overlay */}
-                    <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
-                      <button
-                        onClick={() => setShowTrailer(false)}
-                        className="bg-black/60 hover:bg-black/80 rounded-full p-2 transition-colors flex items-center gap-2"
-                      >
-                        <X className="w-4 h-4 text-white" />
-                        <span className="text-white text-sm pr-2">Fechar trailer</span>
-                      </button>
-
-                      {/* Language toggle */}
+                    {/* Controls overlay - botões DUB/LEG discretos */}
+                    <div className="absolute bottom-4 right-4 z-10 flex items-center gap-2">
                       {hasBothLanguages && (
-                        <div className="flex items-center gap-2 bg-black/60 rounded-full p-1">
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 1 }}
+                          className="flex items-center gap-1 bg-black/70 backdrop-blur-sm rounded-full p-1"
+                        >
                           <button
                             onClick={() => handleLanguageChange('dublado')}
-                            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                               trailerLanguage === 'dublado'
                                 ? 'bg-marvel-red text-white'
                                 : 'text-white/70 hover:text-white'
                             }`}
                           >
-                            Dublado
+                            DUB
                           </button>
                           <button
                             onClick={() => handleLanguageChange('legendado')}
-                            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                               trailerLanguage === 'legendado'
                                 ? 'bg-marvel-red text-white'
                                 : 'text-white/70 hover:text-white'
                             }`}
                           >
-                            Legendado
+                            LEG
                           </button>
-                        </div>
+                        </motion.div>
                       )}
+                      <button
+                        onClick={() => setShowTrailer(false)}
+                        className="bg-black/70 backdrop-blur-sm hover:bg-black/90 rounded-full p-2 transition-colors"
+                      >
+                        <X className="w-4 h-4 text-white" />
+                      </button>
                     </div>
                   </div>
                 ) : (
@@ -146,12 +165,13 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                       fill
                       className="object-cover"
                       priority
+                      unoptimized
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-marvel-dark via-marvel-dark/60 to-transparent" />
                   </>
                 )}
 
-                {/* Title overlay - only show when not playing trailer */}
+                {/* Title overlay */}
                 {!showTrailer && (
                   <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
                     <div className="flex items-start gap-4">
@@ -162,11 +182,13 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                           alt={item.title}
                           fill
                           className="object-cover"
+                          unoptimized
                         />
                       </div>
 
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
+                        {/* Tags */}
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
                           <span className="bg-marvel-red px-2 py-1 rounded text-xs font-bold">
                             Fase {item.phase}
                           </span>
@@ -190,6 +212,7 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                           </p>
                         )}
 
+                        {/* Info com faixa etária ao lado do tempo */}
                         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-300">
                           <div className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
@@ -202,6 +225,11 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                               <span>{item.duration}</span>
                             </div>
                           )}
+
+                          {/* Classificação etária ao lado do tempo */}
+                          <div className={`${ageConfig.bg} px-2 py-0.5 rounded text-xs font-bold ${ageConfig.text}`}>
+                            {ageConfig.label}
+                          </div>
 
                           {item.episodes && (
                             <div className="flex items-center gap-1">
@@ -225,7 +253,7 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
 
               {/* Content */}
               <div className="p-6 md:p-8 space-y-6">
-                {/* Action buttons */}
+                {/* Action buttons - estilo original modernizado */}
                 <div className="flex flex-wrap items-center gap-2">
                   {/* Watched button */}
                   <button
@@ -249,43 +277,15 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                     )}
                   </button>
 
-                  {/* Trailer button with language options */}
+                  {/* Trailer button */}
                   {youtubeId && !showTrailer && (
-                    <>
-                      <button
-                        onClick={() => setShowTrailer(true)}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/30 transition-all"
-                      >
-                        <Youtube className="w-4 h-4" />
-                        Trailer
-                      </button>
-
-                      {/* Language selector */}
-                      {hasBothLanguages && (
-                        <div className="flex items-center bg-white/5 rounded-full p-0.5 border border-white/10">
-                          <button
-                            onClick={() => handleLanguageChange('dublado')}
-                            className={`px-2.5 py-1.5 rounded-full text-xs font-medium transition-all ${
-                              trailerLanguage === 'dublado'
-                                ? 'bg-marvel-red text-white'
-                                : 'text-white/60 hover:text-white'
-                            }`}
-                          >
-                            DUB
-                          </button>
-                          <button
-                            onClick={() => handleLanguageChange('legendado')}
-                            className={`px-2.5 py-1.5 rounded-full text-xs font-medium transition-all ${
-                              trailerLanguage === 'legendado'
-                                ? 'bg-marvel-red text-white'
-                                : 'text-white/60 hover:text-white'
-                            }`}
-                          >
-                            LEG
-                          </button>
-                        </div>
-                      )}
-                    </>
+                    <button
+                      onClick={() => setShowTrailer(true)}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/30 transition-all"
+                    >
+                      <Play className="w-4 h-4" />
+                      Trailer
+                    </button>
                   )}
 
                   {/* YouTube external link */}
@@ -301,7 +301,7 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                     </a>
                   )}
 
-                  {/* Streaming platforms */}
+                  {/* Streaming platforms - Disney+ estilo original */}
                   {item.whereToWatch.length > 0 && (
                     <>
                       <span className="text-white/30 mx-1">|</span>
@@ -335,7 +335,7 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                     {item.genres.map((genre) => (
                       <span
                         key={genre}
-                        className="bg-marvel-red/20 text-marvel-red px-3 py-1 rounded-full text-sm font-medium"
+                        className="bg-white/10 text-gray-300 px-3 py-1 rounded-full text-sm font-medium border border-white/10"
                       >
                         {genre}
                       </span>
@@ -351,8 +351,8 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                   </p>
                 </div>
 
-                {/* Info grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Info grid - layout compacto */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   {/* Director/Creator */}
                   {(item.director || item.creator) && (
                     <div className="bg-white/5 rounded-lg p-4">
@@ -360,7 +360,7 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                         <Clapperboard className="w-4 h-4" />
                         <span>{item.type === 'movie' ? 'Direção' : 'Criação'}</span>
                       </div>
-                      <p className="text-white font-semibold">
+                      <p className="text-white font-semibold text-sm">
                         {item.director || item.creator}
                       </p>
                     </div>
@@ -373,7 +373,7 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                         <DollarSign className="w-4 h-4" />
                         <span>Orçamento</span>
                       </div>
-                      <p className="text-white font-semibold">{item.budget}</p>
+                      <p className="text-white font-semibold text-sm">{item.budget}</p>
                     </div>
                   )}
 
@@ -384,21 +384,26 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                         <TrendingUp className="w-4 h-4" />
                         <span>Bilheteria</span>
                       </div>
-                      <p className="text-white font-semibold">{item.boxOffice}</p>
+                      <p className="text-white font-semibold text-sm">{item.boxOffice}</p>
                     </div>
                   )}
 
-                  {/* Timeline info */}
+                  {/* Chronological Order */}
                   <div className="bg-white/5 rounded-lg p-4">
                     <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                      <Film className="w-4 h-4" />
-                      <span>Ordem de Visualização</span>
+                      <Hash className="w-4 h-4" />
+                      <span>Cronológica</span>
                     </div>
-                    <p className="text-white">
-                      <span className="font-semibold">Cronológica:</span> #{item.chronologicalOrder}
-                      <span className="mx-2 text-gray-500">|</span>
-                      <span className="font-semibold">Lançamento:</span> #{item.releaseOrder}
-                    </p>
+                    <p className="text-white font-semibold text-sm">#{item.chronologicalOrder}</p>
+                  </div>
+
+                  {/* Release Order */}
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+                      <ListOrdered className="w-4 h-4" />
+                      <span>Lançamento</span>
+                    </div>
+                    <p className="text-white font-semibold text-sm">#{item.releaseOrder}</p>
                   </div>
                 </div>
 

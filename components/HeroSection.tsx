@@ -180,7 +180,8 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="flex items-center gap-4 px-6 py-4 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl hover:bg-white/10 transition-colors"
+              className="flex items-center gap-4 px-6 py-4 border border-white/20 rounded-2xl hover:bg-white/10 transition-colors"
+              style={{ boxShadow: 'inset 0px 4px 24px 0px rgba(0, 0, 0, 0.15)' }}
             >
               <div className="relative w-14 h-14">
                 <svg className="w-14 h-14 transform -rotate-90">
@@ -222,7 +223,8 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
-              className="px-6 py-4 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl hover:bg-white/10 transition-colors"
+              className="px-6 py-4 border border-white/20 rounded-2xl hover:bg-white/10 transition-colors"
+              style={{ boxShadow: 'inset 0px 4px 24px 0px rgba(0, 0, 0, 0.15)' }}
             >
               <div className="flex items-center justify-center gap-2 mb-3">
                 <Calendar className="w-4 h-4 text-marvel-red" />
