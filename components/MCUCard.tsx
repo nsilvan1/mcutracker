@@ -1,9 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { MCUItem } from '@/data/mcu-data';
 import { motion } from 'framer-motion';
 import { Check, Star, Heart } from 'lucide-react';
 import Image from 'next/image';
+
+// Blur placeholder base64 (dark gray)
+const blurDataURL = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQQBAwUBAAAAAAAAAAAAAQACAwQFBhESEyExQVFh/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAYEQADAQEAAAAAAAAAAAAAAAAAAQIREv/aAAwDAQACEEMPYAD/AJ0V1p0U3S1IJ6qJX4CedI9xdwBJ8dBuRERPFpfJ/9k=';
 
 interface MCUCardProps {
   item: MCUItem;
@@ -59,6 +63,9 @@ export default function MCUCard({
             src={item.imageUrl}
             alt={item.title}
             fill
+            placeholder="blur"
+            blurDataURL={blurDataURL}
+            loading={index < 7 ? 'eager' : 'lazy'}
             className="object-cover transition-transform duration-700 group-hover:scale-110"
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
           />

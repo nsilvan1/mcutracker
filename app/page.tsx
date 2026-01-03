@@ -13,8 +13,11 @@ import DetailModal from '@/components/DetailModal';
 import HeroSection from '@/components/HeroSection';
 import SearchBar from '@/components/SearchBar';
 import PhaseFilter from '@/components/PhaseFilter';
+import AdvancedFilters from '@/components/AdvancedFilters';
+import AchievementsModal from '@/components/AchievementsModal';
+import ShareProgress from '@/components/ShareProgress';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SlidersHorizontal, X } from 'lucide-react';
+import { SlidersHorizontal, X, Trophy } from 'lucide-react';
 
 interface User {
   id: string;
@@ -38,6 +41,9 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPhases, setSelectedPhases] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
+  const [selectedYears, setSelectedYears] = useState<number[]>([]);
+  const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Usar dados com alterações do admin
@@ -200,6 +206,29 @@ export default function Home() {
     });
   };
 
+  const toggleYear = (year: number) => {
+    setSelectedYears((prev) => {
+      if (prev.includes(year)) {
+        return prev.filter((y) => y !== year);
+      }
+      return [...prev, year];
+    });
+  };
+
+  const toggleDirector = (director: string) => {
+    setSelectedDirectors((prev) => {
+      if (prev.includes(director)) {
+        return prev.filter((d) => d !== director);
+      }
+      return [...prev, director];
+    });
+  };
+
+  const clearAdvancedFilters = () => {
+    setSelectedYears([]);
+    setSelectedDirectors([]);
+  };
+
   const openDetailModal = (item: MCUItem) => {
     setSelectedItem(item);
     setIsDetailModalOpen(true);
@@ -243,6 +272,19 @@ export default function Home() {
       data = data.filter((item) => selectedPhases.includes(item.phase));
     }
 
+    // Year filter
+    if (selectedYears.length > 0) {
+      data = data.filter((item) => selectedYears.includes(item.releaseYear));
+    }
+
+    // Director/Creator filter
+    if (selectedDirectors.length > 0) {
+      data = data.filter((item) =>
+        selectedDirectors.includes(item.director || '') ||
+        selectedDirectors.includes(item.creator || '')
+      );
+    }
+
     // Sort
     if (order === 'chronological') {
       data.sort((a, b) => a.chronologicalOrder - b.chronologicalOrder);
@@ -251,12 +293,12 @@ export default function Home() {
     }
 
     return data;
-  }, [order, filter, searchQuery, selectedPhases, mcuItems]);
+  }, [order, filter, searchQuery, selectedPhases, selectedYears, selectedDirectors, mcuItems]);
 
   const totalItems = filteredAndSortedData.length;
   const watchedCount = filteredAndSortedData.filter((item) => watchedItems.has(item.id)).length;
 
-  const hasActiveFilters = searchQuery || filter !== 'all' || selectedPhases.length > 0;
+  const hasActiveFilters = searchQuery || filter !== 'all' || selectedPhases.length > 0 || selectedYears.length > 0 || selectedDirectors.length > 0;
 
   if (!mounted) {
     return null;
@@ -283,6 +325,12 @@ export default function Home() {
         isWatched={selectedItem ? watchedItems.has(selectedItem.id) : false}
         onClose={closeDetailModal}
         onToggleWatched={toggleWatched}
+      />
+
+      <AchievementsModal
+        isOpen={isAchievementsOpen}
+        onClose={() => setIsAchievementsOpen(false)}
+        watchedItems={watchedItems}
       />
 
       {/* Hero Section */}
@@ -317,6 +365,20 @@ export default function Home() {
                   <span className="w-2 h-2 rounded-full bg-white" />
                 )}
               </button>
+
+              <button
+                onClick={() => setIsAchievementsOpen(true)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-yellow-500/20 to-orange-500/20 text-yellow-500 hover:from-yellow-500/30 hover:to-orange-500/30 border border-yellow-500/30 transition-all"
+              >
+                <Trophy className="w-4 h-4" />
+                <span className="text-sm font-medium">Conquistas</span>
+              </button>
+
+              <ShareProgress
+                watchedCount={watchedItems.size}
+                totalCount={mcuData.length}
+                userName={user?.name}
+              />
             </div>
 
             <div className="text-sm text-gray-400">
@@ -334,12 +396,23 @@ export default function Home() {
                 className="overflow-hidden"
               >
                 <div className="mt-4 p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl">
-                  <div className="flex flex-wrap items-center gap-6">
+                  <div className="flex flex-wrap items-center gap-6 mb-4">
                     <OrderToggle order={order} onToggle={setOrder} />
                     <div className="w-px h-8 bg-white/10 hidden sm:block" />
                     <FilterBar filter={filter} onFilterChange={setFilter} />
                     <div className="w-px h-8 bg-white/10 hidden sm:block" />
                     <PhaseFilter selectedPhases={selectedPhases} onTogglePhase={togglePhase} />
+                  </div>
+
+                  {/* Advanced Filters */}
+                  <div className="pt-4 border-t border-white/10">
+                    <AdvancedFilters
+                      selectedYears={selectedYears}
+                      selectedDirectors={selectedDirectors}
+                      onYearToggle={toggleYear}
+                      onDirectorToggle={toggleDirector}
+                      onClearAll={clearAdvancedFilters}
+                    />
                   </div>
 
                   {hasActiveFilters && (
@@ -352,6 +425,8 @@ export default function Home() {
                           setSearchQuery('');
                           setFilter('all');
                           setSelectedPhases([]);
+                          setSelectedYears([]);
+                          setSelectedDirectors([]);
                         }}
                         className="flex items-center gap-1 text-sm text-marvel-red hover:text-red-400 transition-colors"
                       >
@@ -388,7 +463,7 @@ export default function Home() {
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 md:gap-4"
         >
           {isLoading
-            ? Array.from({ length: 14 }).map((_, i) => <SkeletonCard key={i} />)
+            ? Array.from({ length: 14 }).map((_, i) => <SkeletonCard key={i} index={i} />)
             : filteredAndSortedData.map((item, index) => (
                 <MCUCard
                   key={item.id}

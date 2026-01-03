@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Film, LogIn, LogOut, User, ChevronDown, Shield } from 'lucide-react';
+import { Film, LogIn, LogOut, User, ChevronDown, Shield, GitBranch } from 'lucide-react';
 import Link from 'next/link';
 
 interface HeaderProps {
@@ -49,6 +49,17 @@ export default function Header({ user, onLoginClick, onLogout }: HeaderProps) {
               </p>
             </div>
           </div>
+
+          {/* Navigation */}
+          <nav className="flex items-center gap-2 md:gap-4">
+            <Link
+              href="/timeline"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+            >
+              <GitBranch className="w-4 h-4" />
+              <span className="text-sm font-medium hidden sm:inline">Timeline</span>
+            </Link>
+          </nav>
 
           {/* User section */}
           <div>

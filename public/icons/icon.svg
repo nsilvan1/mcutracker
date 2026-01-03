@@ -1,7 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="64" fill="#0A0A0A"/>
-  <rect x="32" y="32" width="448" height="448" rx="48" fill="#1A1A1A"/>
-  <path d="M256 96L160 160v192l96 64 96-64V160L256 96z" fill="#E62429"/>
-  <path d="M256 128l64 40v144l-64 40-64-40V168l64-40z" fill="#0A0A0A"/>
-  <text x="256" y="290" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="72" font-weight="bold" fill="#FFFFFF">M</text>
+  <!-- Background -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a"/>
+      <stop offset="100%" style="stop-color:#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF3B3B"/>
+      <stop offset="100%" style="stop-color:#E62429"/>
+    </linearGradient>
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.3)"/>
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Main background -->
+  <rect width="512" height="512" rx="96" fill="url(#bgGrad)"/>
+
+  <!-- Inner border glow -->
+  <rect x="24" y="24" width="464" height="464" rx="80" fill="none" stroke="url(#redGrad)" stroke-width="2" opacity="0.3"/>
+
+  <!-- Hexagon shape -->
+  <path d="M256 80 L400 160 L400 352 L256 432 L112 352 L112 160 Z" fill="url(#redGrad)" filter="url(#glow)"/>
+
+  <!-- Inner hexagon -->
+  <path d="M256 112 L368 176 L368 336 L256 400 L144 336 L144 176 Z" fill="#0a0a0a"/>
+
+  <!-- MCU Text -->
+  <text x="256" y="280" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="100" font-weight="900" fill="#FFFFFF" letter-spacing="-5">
+    M
+  </text>
+
+  <!-- Shine effect -->
+  <path d="M256 80 L400 160 L400 256 L256 256 L112 256 L112 160 Z" fill="url(#shineGrad)" opacity="0.2"/>
+
+  <!-- Small checkmark indicator -->
+  <circle cx="400" cy="400" r="64" fill="#22C55E"/>
+  <path d="M370 400 L390 420 L430 380" fill="none" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
