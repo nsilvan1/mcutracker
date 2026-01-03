@@ -29,6 +29,18 @@ export function useAdminChanges() {
           const data = await response.json();
           const changes: DBChanges = data.items || {};
 
+          // Função para validar URLs de imagem
+          const isValidImageUrl = (url: string | undefined): boolean => {
+            if (!url) return false;
+            // Ignorar URLs do wikia e outras URLs problemáticas
+            if (url.includes('wikia.nocookie.net')) return false;
+            // URLs antigas que não funcionam mais
+            if (url.includes('rAGiXaUfPu0D2jwU0xNkIgAKbNX')) return false;
+            if (url.includes('glKDfE6btIRcVB5zrjspRFs4ltW')) return false;
+            if (url.includes('7PiOxc7zqIqL9hg8G4imtcaOZKS')) return false;
+            return true;
+          };
+
           // Aplicar alteracoes aos itens
           const updatedItems = mcuData.map(item => {
             const itemChanges = changes[item.id];
@@ -40,8 +52,8 @@ export function useAdminChanges() {
                 trailerUrlLegendado: itemChanges.trailerUrlLegendado || item.trailerUrlLegendado,
                 description: itemChanges.customDescription || item.description,
                 synopsis: itemChanges.customSynopsis || item.synopsis,
-                imageUrl: itemChanges.customImageUrl || item.imageUrl,
-                backdropUrl: itemChanges.customBackdropUrl || item.backdropUrl,
+                imageUrl: isValidImageUrl(itemChanges.customImageUrl) ? itemChanges.customImageUrl : item.imageUrl,
+                backdropUrl: isValidImageUrl(itemChanges.customBackdropUrl) ? itemChanges.customBackdropUrl : item.backdropUrl,
               };
             }
             return item;
@@ -82,6 +94,18 @@ export async function getMCUDataWithChanges(): Promise<MCUItem[]> {
     const data = await response.json();
     const changes: DBChanges = data.items || {};
 
+    // Função para validar URLs de imagem
+    const isValidImageUrl = (url: string | undefined): boolean => {
+      if (!url) return false;
+      // Ignorar URLs do wikia e outras URLs problemáticas
+      if (url.includes('wikia.nocookie.net')) return false;
+      // URLs antigas que não funcionam mais
+      if (url.includes('rAGiXaUfPu0D2jwU0xNkIgAKbNX')) return false;
+      if (url.includes('glKDfE6btIRcVB5zrjspRFs4ltW')) return false;
+      if (url.includes('7PiOxc7zqIqL9hg8G4imtcaOZKS')) return false;
+      return true;
+    };
+
     return mcuData.map(item => {
       const itemChanges = changes[item.id];
       if (itemChanges) {
@@ -92,8 +116,8 @@ export async function getMCUDataWithChanges(): Promise<MCUItem[]> {
           trailerUrlLegendado: itemChanges.trailerUrlLegendado || item.trailerUrlLegendado,
           description: itemChanges.customDescription || item.description,
           synopsis: itemChanges.customSynopsis || item.synopsis,
-          imageUrl: itemChanges.customImageUrl || item.imageUrl,
-          backdropUrl: itemChanges.customBackdropUrl || item.backdropUrl,
+          imageUrl: isValidImageUrl(itemChanges.customImageUrl) ? itemChanges.customImageUrl : item.imageUrl,
+          backdropUrl: isValidImageUrl(itemChanges.customBackdropUrl) ? itemChanges.customBackdropUrl : item.backdropUrl,
         };
       }
       return item;
