@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
         name: user.name,
         email: user.email,
         watchedItems: user.watchedItems,
+        isAdmin: user.isAdmin || false,
       },
     });
   } catch (error: any) {

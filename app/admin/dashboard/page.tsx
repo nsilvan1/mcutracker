@@ -13,15 +13,27 @@ import {
   Save,
   X,
   Youtube,
-  ExternalLink,
   ChevronDown,
   ChevronUp,
   Check,
   AlertCircle,
   Shield,
-  Home
+  Home,
+  Loader2,
+  RefreshCw
 } from 'lucide-react';
 import Image from 'next/image';
+
+interface DBItem {
+  itemId: string;
+  trailerUrl?: string;
+  trailerUrlDublado?: string;
+  trailerUrlLegendado?: string;
+  customDescription?: string;
+  customSynopsis?: string;
+  customImageUrl?: string;
+  customBackdropUrl?: string;
+}
 
 interface EditableItem extends MCUItem {
   isEditing?: boolean;
@@ -31,55 +43,100 @@ interface EditableItem extends MCUItem {
 export default function AdminDashboard() {
   const router = useRouter();
   const [items, setItems] = useState<EditableItem[]>([]);
+  const [dbChanges, setDbChanges] = useState<Map<string, DBItem>>(new Map());
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'movie' | 'series'>('all');
   const [filterPhase, setFilterPhase] = useState<number | null>(null);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<EditableItem | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const [pendingChanges, setPendingChanges] = useState<Map<string, Partial<MCUItem>>>(new Map());
+  const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string; isAdmin: boolean } | null>(null);
 
-  // Verificar autenticação
+  // Verificar autenticação via JWT
   useEffect(() => {
-    const adminAuth = localStorage.getItem('mcu-admin-auth');
-    const authTime = localStorage.getItem('mcu-admin-auth-time');
+    const savedToken = localStorage.getItem('mcu-token');
+    const savedUser = localStorage.getItem('mcu-user');
 
-    // Sessão expira em 24 horas
-    const isExpired = authTime && (Date.now() - parseInt(authTime)) > 24 * 60 * 60 * 1000;
+    if (!savedToken || !savedUser) {
+      router.push('/');
+      return;
+    }
 
-    if (adminAuth !== 'authenticated' || isExpired) {
-      localStorage.removeItem('mcu-admin-auth');
-      localStorage.removeItem('mcu-admin-auth-time');
-      router.push('/admin');
+    try {
+      const userData = JSON.parse(savedUser);
+      if (!userData.isAdmin) {
+        router.push('/');
+        return;
+      }
+      setToken(savedToken);
+      setUser(userData);
+    } catch (error) {
+      router.push('/');
     }
   }, [router]);
 
-  // Carregar dados
+  // Carregar dados do MongoDB
   useEffect(() => {
-    // Tentar carregar alterações salvas do localStorage
-    const savedChanges = localStorage.getItem('mcu-admin-changes');
-    if (savedChanges) {
-      const changes = JSON.parse(savedChanges);
-      setPendingChanges(new Map(Object.entries(changes)));
+    if (!token) return;
 
-      // Aplicar alterações aos itens
-      const updatedItems = mcuData.map(item => {
-        const itemChanges = changes[item.id];
-        if (itemChanges) {
-          return { ...item, ...itemChanges, hasChanges: true };
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/admin/mcu-items', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const changesMap = new Map<string, DBItem>();
+
+          data.items.forEach((item: DBItem) => {
+            changesMap.set(item.itemId, item);
+          });
+
+          setDbChanges(changesMap);
+
+          // Aplicar alterações do banco aos itens
+          const updatedItems = mcuData.map(item => {
+            const dbItem = changesMap.get(item.id);
+            if (dbItem) {
+              return {
+                ...item,
+                trailerUrl: dbItem.trailerUrl || item.trailerUrl,
+                trailerUrlDublado: dbItem.trailerUrlDublado || item.trailerUrlDublado,
+                trailerUrlLegendado: dbItem.trailerUrlLegendado || item.trailerUrlLegendado,
+                imageUrl: dbItem.customImageUrl || item.imageUrl,
+                backdropUrl: dbItem.customBackdropUrl || item.backdropUrl,
+                synopsis: dbItem.customSynopsis || item.synopsis,
+                hasChanges: true,
+              };
+            }
+            return item;
+          });
+
+          setItems(updatedItems);
+        } else if (response.status === 401 || response.status === 403) {
+          router.push('/');
         }
-        return item;
-      });
-      setItems(updatedItems);
-    } else {
-      setItems(mcuData);
-    }
-  }, []);
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        setItems(mcuData);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, [token, router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('mcu-admin-auth');
-    localStorage.removeItem('mcu-admin-auth-time');
-    router.push('/admin');
+    localStorage.removeItem('mcu-token');
+    localStorage.removeItem('mcu-user');
+    router.push('/');
   };
 
   const handleEditItem = (item: EditableItem) => {
@@ -87,60 +144,111 @@ export default function AdminDashboard() {
     setExpandedItem(item.id);
   };
 
-  const handleSaveItem = (item: EditableItem) => {
-    // Salvar alterações no localStorage
-    const changes = new Map(pendingChanges);
-    const itemChanges: Partial<MCUItem> = {
-      trailerUrl: item.trailerUrl,
-      trailerUrlDublado: item.trailerUrlDublado,
-      trailerUrlLegendado: item.trailerUrlLegendado,
-      imageUrl: item.imageUrl,
-      backdropUrl: item.backdropUrl,
-      rating: item.rating,
-      synopsis: item.synopsis,
-    };
+  const handleSaveItem = async (item: EditableItem) => {
+    if (!token) return;
 
-    changes.set(item.id, itemChanges);
-    setPendingChanges(changes);
+    setSaveStatus('saving');
 
-    // Salvar no localStorage
-    const changesObj = Object.fromEntries(changes);
-    localStorage.setItem('mcu-admin-changes', JSON.stringify(changesObj));
+    try {
+      const response = await fetch('/api/admin/mcu-items', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          itemId: item.id,
+          trailerUrl: item.trailerUrl,
+          trailerUrlDublado: item.trailerUrlDublado,
+          trailerUrlLegendado: item.trailerUrlLegendado,
+          customImageUrl: item.imageUrl,
+          customBackdropUrl: item.backdropUrl,
+          customSynopsis: item.synopsis,
+        }),
+      });
 
-    // Atualizar lista de itens
-    setItems(prev => prev.map(i =>
-      i.id === item.id ? { ...i, ...itemChanges, hasChanges: true } : i
-    ));
+      if (response.ok) {
+        // Atualizar estado local
+        const newDbChanges = new Map(dbChanges);
+        newDbChanges.set(item.id, {
+          itemId: item.id,
+          trailerUrl: item.trailerUrl,
+          trailerUrlDublado: item.trailerUrlDublado,
+          trailerUrlLegendado: item.trailerUrlLegendado,
+          customImageUrl: item.imageUrl,
+          customBackdropUrl: item.backdropUrl,
+          customSynopsis: item.synopsis,
+        });
+        setDbChanges(newDbChanges);
 
-    setEditingItem(null);
-    setSaveStatus('saved');
-    setTimeout(() => setSaveStatus('idle'), 2000);
+        // Atualizar lista de itens
+        setItems(prev => prev.map(i =>
+          i.id === item.id ? { ...item, hasChanges: true } : i
+        ));
+
+        setEditingItem(null);
+        setSaveStatus('saved');
+        setTimeout(() => setSaveStatus('idle'), 2000);
+      } else {
+        setSaveStatus('error');
+        setTimeout(() => setSaveStatus('idle'), 3000);
+      }
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
   };
 
   const handleCancelEdit = () => {
     setEditingItem(null);
   };
 
-  const handleClearChanges = () => {
-    if (confirm('Tem certeza que deseja limpar todas as alterações pendentes?')) {
-      localStorage.removeItem('mcu-admin-changes');
-      setPendingChanges(new Map());
-      setItems(mcuData);
-      setSaveStatus('idle');
+  const handleRefresh = async () => {
+    if (!token) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/admin/mcu-items', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const changesMap = new Map<string, DBItem>();
+
+        data.items.forEach((item: DBItem) => {
+          changesMap.set(item.itemId, item);
+        });
+
+        setDbChanges(changesMap);
+
+        const updatedItems = mcuData.map(item => {
+          const dbItem = changesMap.get(item.id);
+          if (dbItem) {
+            return {
+              ...item,
+              trailerUrl: dbItem.trailerUrl || item.trailerUrl,
+              trailerUrlDublado: dbItem.trailerUrlDublado || item.trailerUrlDublado,
+              trailerUrlLegendado: dbItem.trailerUrlLegendado || item.trailerUrlLegendado,
+              imageUrl: dbItem.customImageUrl || item.imageUrl,
+              backdropUrl: dbItem.customBackdropUrl || item.backdropUrl,
+              synopsis: dbItem.customSynopsis || item.synopsis,
+              hasChanges: true,
+            };
+          }
+          return { ...item, hasChanges: false };
+        });
+
+        setItems(updatedItems);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar:', error);
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const handleExportChanges = () => {
-    const changesObj = Object.fromEntries(pendingChanges);
-    const dataStr = JSON.stringify(changesObj, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-
-    const exportFileDefaultName = `mcu-changes-${new Date().toISOString().split('T')[0]}.json`;
-
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
   };
 
   // Filtrar itens
@@ -159,10 +267,21 @@ export default function AdminDashboard() {
     series: items.filter(i => i.type === 'series').length,
     withTrailer: items.filter(i => i.trailerUrl || i.trailerUrlDublado).length,
     withDublado: items.filter(i => i.trailerUrlDublado).length,
-    pendingChanges: pendingChanges.size,
+    dbChanges: dbChanges.size,
   };
 
   const phases = [1, 2, 3, 4, 5, 6];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-marvel-dark flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-marvel-red animate-spin mx-auto mb-4" />
+          <p className="text-gray-400">Carregando dados...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-marvel-dark">
@@ -174,11 +293,21 @@ export default function AdminDashboard() {
               <Shield className="w-8 h-8 text-marvel-red" />
               <div>
                 <h1 className="text-xl font-bold text-white">Admin MCU Tracker</h1>
-                <p className="text-xs text-gray-400">Painel de Administração</p>
+                <p className="text-xs text-gray-400">
+                  Logado como <span className="text-marvel-red">{user?.name}</span>
+                </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
+              <button
+                onClick={handleRefresh}
+                disabled={isLoading}
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm transition-colors disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                Atualizar
+              </button>
               <a
                 href="/"
                 className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm transition-colors"
@@ -210,7 +339,7 @@ export default function AdminDashboard() {
             <p className="text-2xl font-bold text-blue-400">{stats.movies}</p>
           </div>
           <div className="bg-marvel-gray rounded-xl p-4 border border-white/5">
-            <p className="text-gray-400 text-xs mb-1">Séries</p>
+            <p className="text-gray-400 text-xs mb-1">Series</p>
             <p className="text-2xl font-bold text-purple-400">{stats.series}</p>
           </div>
           <div className="bg-marvel-gray rounded-xl p-4 border border-white/5">
@@ -222,40 +351,22 @@ export default function AdminDashboard() {
             <p className="text-2xl font-bold text-yellow-400">{stats.withDublado}</p>
           </div>
           <div className="bg-marvel-gray rounded-xl p-4 border border-white/5">
-            <p className="text-gray-400 text-xs mb-1">Alterações</p>
-            <p className="text-2xl font-bold text-marvel-red">{stats.pendingChanges}</p>
+            <p className="text-gray-400 text-xs mb-1">No Banco</p>
+            <p className="text-2xl font-bold text-marvel-red">{stats.dbChanges}</p>
           </div>
         </div>
 
-        {/* Actions bar */}
-        {pendingChanges.size > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-yellow-500" />
-              <p className="text-yellow-400 text-sm">
-                Você tem <strong>{pendingChanges.size}</strong> alterações pendentes salvas localmente.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleExportChanges}
-                className="px-4 py-2 bg-yellow-500/20 hover:bg-yellow-500/30 rounded-lg text-yellow-400 text-sm transition-colors"
-              >
-                Exportar JSON
-              </button>
-              <button
-                onClick={handleClearChanges}
-                className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 text-sm transition-colors"
-              >
-                Limpar Tudo
-              </button>
-            </div>
-          </motion.div>
-        )}
+        {/* Info message */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-6 flex items-center gap-3"
+        >
+          <AlertCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
+          <p className="text-blue-400 text-sm">
+            As alterações sao salvas diretamente no MongoDB e ficam disponiveis para todos os usuarios.
+          </p>
+        </motion.div>
 
         {/* Filters */}
         <div className="bg-marvel-gray rounded-xl p-4 mb-6 border border-white/5">
@@ -265,7 +376,7 @@ export default function AdminDashboard() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
                 type="text"
-                placeholder="Buscar por título..."
+                placeholder="Buscar por titulo..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-11 pr-4 py-2.5 bg-marvel-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-marvel-red focus:border-transparent"
@@ -304,7 +415,7 @@ export default function AdminDashboard() {
                 }`}
               >
                 <Tv className="w-4 h-4" />
-                Séries
+                Series
               </button>
             </div>
 
@@ -344,7 +455,7 @@ export default function AdminDashboard() {
               key={item.id}
               layout
               className={`bg-marvel-gray rounded-xl border overflow-hidden ${
-                item.hasChanges ? 'border-yellow-500/30' : 'border-white/5'
+                item.hasChanges ? 'border-green-500/30' : 'border-white/5'
               }`}
             >
               {/* Item header */}
@@ -368,15 +479,15 @@ export default function AdminDashboard() {
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-semibold text-white truncate">{item.title}</h3>
                     {item.hasChanges && (
-                      <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
-                        Alterado
+                      <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">
+                        No BD
                       </span>
                     )}
                   </div>
                   <div className="flex items-center gap-3 text-sm text-gray-400">
                     <span className="flex items-center gap-1">
                       {item.type === 'movie' ? <Film className="w-3 h-3" /> : <Tv className="w-3 h-3" />}
-                      {item.type === 'movie' ? 'Filme' : 'Série'}
+                      {item.type === 'movie' ? 'Filme' : 'Serie'}
                     </span>
                     <span>Fase {item.phase}</span>
                     <span>{item.releaseYear}</span>
@@ -509,15 +620,15 @@ export default function AdminDashboard() {
                           <span className="text-white ml-2">{item.rating.toFixed(1)}</span>
                         </div>
                         <div>
-                          <span className="text-gray-400">Ordem Cronológica:</span>
+                          <span className="text-gray-400">Ordem Cronologica:</span>
                           <span className="text-white ml-2">#{item.chronologicalOrder}</span>
                         </div>
                         <div>
-                          <span className="text-gray-400">Ordem Lançamento:</span>
+                          <span className="text-gray-400">Ordem Lancamento:</span>
                           <span className="text-white ml-2">#{item.releaseOrder}</span>
                         </div>
                         <div>
-                          <span className="text-gray-400">Cenas Pós-Créditos:</span>
+                          <span className="text-gray-400">Cenas Pos-Creditos:</span>
                           <span className="text-white ml-2">{item.postCreditsScenes || 0}</span>
                         </div>
                       </div>
@@ -656,22 +767,6 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  {/* Rating */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Rating (0-10)
-                    </label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="10"
-                      step="0.1"
-                      value={editingItem.rating}
-                      onChange={(e) => setEditingItem({ ...editingItem, rating: parseFloat(e.target.value) || 0 })}
-                      className="w-32 px-4 py-3 bg-marvel-dark border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-marvel-red"
-                    />
-                  </div>
-
                   {/* Synopsis */}
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -696,10 +791,20 @@ export default function AdminDashboard() {
                   </button>
                   <button
                     onClick={() => handleSaveItem(editingItem)}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-marvel-red hover:bg-red-600 rounded-lg text-white font-medium transition-colors"
+                    disabled={saveStatus === 'saving'}
+                    className="flex items-center gap-2 px-6 py-2.5 bg-marvel-red hover:bg-red-600 disabled:bg-gray-600 rounded-lg text-white font-medium transition-colors"
                   >
-                    <Save className="w-4 h-4" />
-                    Salvar Alterações
+                    {saveStatus === 'saving' ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Salvando...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        Salvar no MongoDB
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
@@ -718,7 +823,18 @@ export default function AdminDashboard() {
             className="fixed bottom-6 right-6 flex items-center gap-2 px-4 py-3 bg-green-500 rounded-lg text-white shadow-lg"
           >
             <Check className="w-5 h-5" />
-            Alterações salvas!
+            Salvo no MongoDB!
+          </motion.div>
+        )}
+        {saveStatus === 'error' && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-6 right-6 flex items-center gap-2 px-4 py-3 bg-red-500 rounded-lg text-white shadow-lg"
+          >
+            <AlertCircle className="w-5 h-5" />
+            Erro ao salvar!
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,15 +1,32 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Film, LogIn, LogOut, User } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Film, LogIn, LogOut, User, ChevronDown, Shield } from 'lucide-react';
+import Link from 'next/link';
 
 interface HeaderProps {
-  user: { name: string; email: string } | null;
+  user: { name: string; email: string; isAdmin?: boolean } | null;
   onLoginClick: () => void;
   onLogout: () => void;
 }
 
 export default function Header({ user, onLoginClick, onLogout }: HeaderProps) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Fechar dropdown ao clicar fora
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -37,17 +54,61 @@ export default function Header({ user, onLoginClick, onLogout }: HeaderProps) {
           <div>
             {user ? (
               <div className="flex items-center gap-3">
-                <div className="hidden md:flex items-center gap-2 bg-marvel-gray px-3 py-2 rounded-lg">
-                  <User className="w-4 h-4 text-marvel-red" />
-                  <span className="text-sm text-gray-300">{user.name}</span>
+                {/* Dropdown do usuário */}
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex items-center gap-2 bg-marvel-gray hover:bg-marvel-gray/80 px-3 py-2 rounded-lg transition-colors"
+                  >
+                    <User className="w-4 h-4 text-marvel-red" />
+                    <span className="text-sm text-gray-300 hidden md:inline">{user.name}</span>
+                    {user.isAdmin && (
+                      <span title="Administrador">
+                        <Shield className="w-3 h-3 text-yellow-500" />
+                      </span>
+                    )}
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {isDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 mt-2 w-48 bg-marvel-gray border border-white/10 rounded-lg shadow-xl overflow-hidden z-50"
+                      >
+                        <div className="px-4 py-3 border-b border-white/10">
+                          <p className="text-sm font-medium text-white">{user.name}</p>
+                          <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                        </div>
+
+                        {user.isAdmin && (
+                          <Link
+                            href="/admin/dashboard"
+                            onClick={() => setIsDropdownOpen(false)}
+                            className="flex items-center gap-2 px-4 py-3 text-sm text-yellow-500 hover:bg-white/5 transition-colors"
+                          >
+                            <Shield className="w-4 h-4" />
+                            Painel Admin
+                          </Link>
+                        )}
+
+                        <button
+                          onClick={() => {
+                            setIsDropdownOpen(false);
+                            onLogout();
+                          }}
+                          className="flex items-center gap-2 w-full px-4 py-3 text-sm text-red-400 hover:bg-white/5 transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sair
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-                <button
-                  onClick={onLogout}
-                  className="flex items-center gap-2 bg-marvel-red hover:bg-red-600 px-4 py-2 rounded-lg transition-colors"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span className="text-sm font-semibold hidden sm:inline">Sair</span>
-                </button>
               </div>
             ) : (
               <button
