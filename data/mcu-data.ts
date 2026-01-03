@@ -75,7 +75,7 @@ export const mcuData: MCUItem[] = [
     description: 'Bruce Banner busca a cura enquanto foge do General Ross.',
     synopsis: 'Bruce Banner, um cientista fugitivo, busca desesperadamente uma cura para a radiação gama que transforma seu corpo em uma criatura verde e destrutiva chamada Hulk. Enquanto evita o General Thaddeus Ross e suas forças militares, Bruce tenta descobrir uma forma de controlar sua transformação antes que seja tarde demais.',
     imageUrl: 'https://image.tmdb.org/t/p/w500/gKzYx79y0AQTL4UAk1cBQJ3nvrm.jpg',
-    backdropUrl: 'https://image.tmdb.org/t/p/original/jPu8yiadqgzwFPGKJmGo637ASVP.jpg',
+    backdropUrl: 'https://image.tmdb.org/t/p/original/xfBnQ4mgf1jYZsscJGJjr6ce0Ar.jpg',
     whereToWatch: ['Disney+'],
     director: 'Louis Leterrier',
     cast: ['Edward Norton', 'Liv Tyler', 'Tim Roth', 'William Hurt'],
