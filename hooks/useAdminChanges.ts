@@ -52,8 +52,8 @@ export function useAdminChanges() {
                 trailerUrlLegendado: itemChanges.trailerUrlLegendado || item.trailerUrlLegendado,
                 description: itemChanges.customDescription || item.description,
                 synopsis: itemChanges.customSynopsis || item.synopsis,
-                imageUrl: isValidImageUrl(itemChanges.customImageUrl) ? itemChanges.customImageUrl : item.imageUrl,
-                backdropUrl: isValidImageUrl(itemChanges.customBackdropUrl) ? itemChanges.customBackdropUrl : item.backdropUrl,
+                imageUrl: (itemChanges.customImageUrl && isValidImageUrl(itemChanges.customImageUrl)) ? itemChanges.customImageUrl : item.imageUrl,
+                backdropUrl: (itemChanges.customBackdropUrl && isValidImageUrl(itemChanges.customBackdropUrl)) ? itemChanges.customBackdropUrl : item.backdropUrl,
               };
             }
             return item;
@@ -116,8 +116,8 @@ export async function getMCUDataWithChanges(): Promise<MCUItem[]> {
           trailerUrlLegendado: itemChanges.trailerUrlLegendado || item.trailerUrlLegendado,
           description: itemChanges.customDescription || item.description,
           synopsis: itemChanges.customSynopsis || item.synopsis,
-          imageUrl: isValidImageUrl(itemChanges.customImageUrl) ? itemChanges.customImageUrl : item.imageUrl,
-          backdropUrl: isValidImageUrl(itemChanges.customBackdropUrl) ? itemChanges.customBackdropUrl : item.backdropUrl,
+          imageUrl: (itemChanges.customImageUrl && isValidImageUrl(itemChanges.customImageUrl)) ? itemChanges.customImageUrl : item.imageUrl,
+          backdropUrl: (itemChanges.customBackdropUrl && isValidImageUrl(itemChanges.customBackdropUrl)) ? itemChanges.customBackdropUrl : item.backdropUrl,
         };
       }
       return item;
