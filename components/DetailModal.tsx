@@ -343,24 +343,29 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
                   </div>
                 )}
 
-                {/* Synopsis */}
-                <div>
-                  <h2 className="text-lg font-bold text-white mb-2">Sinopse</h2>
-                  <p className="text-gray-300 leading-relaxed">
+                {/* Synopsis - modernizada */}
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-1 h-6 bg-gradient-to-b from-marvel-red to-red-600 rounded-full" />
+                    <h2 className="text-xl font-bold text-white">Sinopse</h2>
+                  </div>
+                  <p className="text-gray-300 leading-relaxed text-base pl-4 border-l border-white/10">
                     {item.synopsis || item.description}
                   </p>
                 </div>
 
-                {/* Info grid - layout compacto */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                {/* Info Cards - design compacto e moderno */}
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                   {/* Director/Creator */}
                   {(item.director || item.creator) && (
-                    <div className="bg-white/5 rounded-lg p-4">
-                      <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                        <Clapperboard className="w-4 h-4" />
-                        <span>{item.type === 'movie' ? 'Direção' : 'Criação'}</span>
+                    <div className="group relative bg-white/[0.05] rounded-xl p-3 border border-white/10 hover:border-purple-500/30 hover:bg-purple-500/5 transition-all duration-200">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <Clapperboard className="w-3.5 h-3.5 text-purple-400" />
+                        <span className="text-gray-500 text-[10px] uppercase tracking-wide">
+                          {item.type === 'movie' ? 'Direção' : 'Criação'}
+                        </span>
                       </div>
-                      <p className="text-white font-semibold text-sm">
+                      <p className="text-white font-medium text-xs leading-tight truncate">
                         {item.director || item.creator}
                       </p>
                     </div>
@@ -368,60 +373,65 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
 
                   {/* Budget */}
                   {item.budget && (
-                    <div className="bg-white/5 rounded-lg p-4">
-                      <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                        <DollarSign className="w-4 h-4" />
-                        <span>Orçamento</span>
+                    <div className="group relative bg-white/[0.05] rounded-xl p-3 border border-white/10 hover:border-green-500/30 hover:bg-green-500/5 transition-all duration-200">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <DollarSign className="w-3.5 h-3.5 text-green-400" />
+                        <span className="text-gray-500 text-[10px] uppercase tracking-wide">Orçamento</span>
                       </div>
-                      <p className="text-white font-semibold text-sm">{item.budget}</p>
+                      <p className="text-white font-medium text-xs">{item.budget}</p>
                     </div>
                   )}
 
                   {/* Box Office */}
                   {item.boxOffice && (
-                    <div className="bg-white/5 rounded-lg p-4">
-                      <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                        <TrendingUp className="w-4 h-4" />
-                        <span>Bilheteria</span>
+                    <div className="group relative bg-white/[0.05] rounded-xl p-3 border border-white/10 hover:border-yellow-500/30 hover:bg-yellow-500/5 transition-all duration-200">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <TrendingUp className="w-3.5 h-3.5 text-yellow-400" />
+                        <span className="text-gray-500 text-[10px] uppercase tracking-wide">Bilheteria</span>
                       </div>
-                      <p className="text-white font-semibold text-sm">{item.boxOffice}</p>
+                      <p className="text-white font-medium text-xs">{item.boxOffice}</p>
                     </div>
                   )}
 
                   {/* Chronological Order */}
-                  <div className="bg-white/5 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                      <Hash className="w-4 h-4" />
-                      <span>Cronológica</span>
+                  <div className="group relative bg-white/[0.05] rounded-xl p-3 border border-white/10 hover:border-blue-500/30 hover:bg-blue-500/5 transition-all duration-200">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <Hash className="w-3.5 h-3.5 text-blue-400" />
+                      <span className="text-gray-500 text-[10px] uppercase tracking-wide">Cronológica</span>
                     </div>
-                    <p className="text-white font-semibold text-sm">#{item.chronologicalOrder}</p>
+                    <p className="text-white font-bold text-sm">#{item.chronologicalOrder}</p>
                   </div>
 
                   {/* Release Order */}
-                  <div className="bg-white/5 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-gray-400 text-sm mb-2">
-                      <ListOrdered className="w-4 h-4" />
-                      <span>Lançamento</span>
+                  <div className="group relative bg-white/[0.05] rounded-xl p-3 border border-white/10 hover:border-marvel-red/30 hover:bg-marvel-red/5 transition-all duration-200">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <ListOrdered className="w-3.5 h-3.5 text-marvel-red" />
+                      <span className="text-gray-500 text-[10px] uppercase tracking-wide">Lançamento</span>
                     </div>
-                    <p className="text-white font-semibold text-sm">#{item.releaseOrder}</p>
+                    <p className="text-white font-bold text-sm">#{item.releaseOrder}</p>
                   </div>
                 </div>
 
-                {/* Cast */}
+                {/* Cast - design moderno */}
                 {item.cast && item.cast.length > 0 && (
                   <div>
-                    <div className="flex items-center gap-2 text-lg font-bold text-white mb-3">
-                      <Users className="w-5 h-5" />
-                      <span>Elenco Principal</span>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center">
+                        <Users className="w-5 h-5 text-white" />
+                      </div>
+                      <h2 className="text-xl font-bold text-white">Elenco Principal</h2>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {item.cast.map((actor) => (
-                        <span
+                      {item.cast.map((actor, index) => (
+                        <motion.span
                           key={actor}
-                          className="bg-white/10 px-3 py-2 rounded-lg text-sm text-gray-200"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          className="bg-gradient-to-r from-white/10 to-white/5 px-4 py-2.5 rounded-xl text-sm text-gray-200 border border-white/10 hover:border-white/20 hover:bg-white/15 transition-all cursor-default"
                         >
                           {actor}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
                   </div>
