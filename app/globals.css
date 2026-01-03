@@ -57,18 +57,24 @@ body::after {
     radial-gradient(2px 2px at 10% 15%, rgba(147, 51, 234, 0.7) 0%, transparent 100%),
     radial-gradient(2px 2px at 25% 45%, rgba(107, 33, 168, 0.6) 0%, transparent 100%),
     radial-gradient(1px 1px at 40% 25%, rgba(168, 85, 247, 0.5) 0%, transparent 100%),
+    radial-gradient(3px 3px at 5% 60%, rgba(139, 92, 246, 0.5) 0%, transparent 100%),
+    radial-gradient(2px 2px at 95% 25%, rgba(167, 139, 250, 0.4) 0%, transparent 100%),
     /* Red doom particles */
     radial-gradient(2px 2px at 70% 20%, rgba(230, 36, 41, 0.6) 0%, transparent 100%),
     radial-gradient(1px 1px at 85% 55%, rgba(220, 38, 38, 0.5) 0%, transparent 100%),
     radial-gradient(2px 2px at 55% 75%, rgba(239, 68, 68, 0.4) 0%, transparent 100%),
+    radial-gradient(3px 3px at 35% 85%, rgba(248, 113, 113, 0.35) 0%, transparent 100%),
     /* Cyan multiverse sparks */
     radial-gradient(1px 1px at 15% 80%, rgba(6, 182, 212, 0.6) 0%, transparent 100%),
     radial-gradient(2px 2px at 90% 85%, rgba(34, 211, 238, 0.5) 0%, transparent 100%),
     radial-gradient(1px 1px at 60% 10%, rgba(6, 182, 212, 0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 80% 65%, rgba(103, 232, 249, 0.4) 0%, transparent 100%),
     /* White energy flares */
     radial-gradient(1px 1px at 30% 60%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
     radial-gradient(2px 2px at 75% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 45% 90%, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
+    radial-gradient(1px 1px at 45% 90%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 20% 35%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+    radial-gradient(2px 2px at 65% 5%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
   pointer-events: none;
   z-index: -1;
   animation: doomsdayPulse 15s ease-in-out infinite;
@@ -132,5 +138,497 @@ body::after {
 @media (min-width: 1024px) {
   .grid-pattern {
     background-size: 60px 60px;
+  }
+}
+
+/* ========================================
+   DOOMSDAY ANIMATIONS - Lightweight CSS
+   ======================================== */
+
+/* Glitch effect for titles - Container approach */
+.glitch-container {
+  position: relative;
+  display: inline-block;
+  animation: glitchShift 8s ease-in-out infinite;
+}
+
+.glitch-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glitch-cyan {
+  color: var(--doomsday-cyan);
+  animation: glitchLeft 8s ease-in-out infinite;
+}
+
+.glitch-red {
+  color: var(--marvel-red);
+  animation: glitchRight 8s ease-in-out infinite;
+}
+
+@keyframes glitchShift {
+  0%, 90%, 100% { transform: translate(0); }
+  92% { transform: translate(-2px, 1px); }
+  94% { transform: translate(2px, -1px); }
+  96% { transform: translate(-1px, 2px); }
+  98% { transform: translate(1px, -2px); }
+}
+
+@keyframes glitchLeft {
+  0%, 90%, 100% { opacity: 0; transform: translate(0); }
+  92% { opacity: 0.8; transform: translate(-3px, 0); }
+  94% { opacity: 0; transform: translate(0); }
+  96% { opacity: 0.5; transform: translate(-2px, 1px); }
+  98% { opacity: 0; transform: translate(0); }
+}
+
+@keyframes glitchRight {
+  0%, 90%, 100% { opacity: 0; transform: translate(0); }
+  91% { opacity: 0.8; transform: translate(3px, 0); }
+  93% { opacity: 0; transform: translate(0); }
+  95% { opacity: 0.5; transform: translate(2px, -1px); }
+  97% { opacity: 0; transform: translate(0); }
+}
+
+/* Hover effect for cards - subtle glow */
+.dimensional-card {
+  transition: all 0.3s ease;
+}
+
+.dimensional-card:hover {
+  transform: scale(1.02);
+  box-shadow:
+    0 0 25px rgba(107, 33, 168, 0.4),
+    0 0 50px rgba(230, 36, 41, 0.2);
+}
+
+/* Rift lines in background */
+.rift-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.rift-line {
+  position: absolute;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(107, 33, 168, 0.4) 20%,
+    rgba(230, 36, 41, 0.3) 50%,
+    rgba(6, 182, 212, 0.4) 80%,
+    transparent 100%
+  );
+  height: 1px;
+  animation: riftPulse 10s ease-in-out infinite;
+  filter: blur(0.5px);
+}
+
+.rift-line:nth-child(1) {
+  top: 15%;
+  left: -10%;
+  width: 40%;
+  transform: rotate(-15deg);
+  animation-delay: 0s;
+}
+
+.rift-line:nth-child(2) {
+  top: 35%;
+  right: -5%;
+  width: 35%;
+  transform: rotate(12deg);
+  animation-delay: 3s;
+}
+
+.rift-line:nth-child(3) {
+  bottom: 25%;
+  left: -8%;
+  width: 45%;
+  transform: rotate(-8deg);
+  animation-delay: 6s;
+}
+
+.rift-line:nth-child(4) {
+  bottom: 45%;
+  right: -10%;
+  width: 30%;
+  transform: rotate(20deg);
+  animation-delay: 2s;
+}
+
+@keyframes riftPulse {
+  0%, 100% { opacity: 0; transform: scaleX(0.8) rotate(var(--rotation, -15deg)); }
+  50% { opacity: 0.6; transform: scaleX(1.2) rotate(var(--rotation, -15deg)); }
+}
+
+/* Floating nebula orbs */
+.nebula-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: -1;
+  animation: nebulaFloat 20s ease-in-out infinite;
+}
+
+.nebula-orb-1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(107, 33, 168, 0.3) 0%, transparent 70%);
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.nebula-orb-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(230, 36, 41, 0.2) 0%, transparent 70%);
+  top: 60%;
+  right: 5%;
+  animation-delay: -7s;
+  animation-duration: 25s;
+}
+
+.nebula-orb-3 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, transparent 70%);
+  bottom: 20%;
+  left: 15%;
+  animation-delay: -14s;
+  animation-duration: 22s;
+}
+
+.nebula-orb-4 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+  top: 30%;
+  right: 20%;
+  animation-delay: -5s;
+  animation-duration: 28s;
+}
+
+@keyframes nebulaFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(30px, -20px) scale(1.1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-20px, 30px) scale(0.9);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translate(-30px, -10px) scale(1.05);
+    opacity: 0.7;
+  }
+}
+
+/* Energy waves emanating from center */
+.energy-wave {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  animation: energyWaveExpand 8s ease-out infinite;
+}
+
+.energy-wave-1 {
+  border-color: rgba(107, 33, 168, 0.3);
+  animation-delay: 0s;
+}
+
+.energy-wave-2 {
+  border-color: rgba(230, 36, 41, 0.2);
+  animation-delay: 2s;
+}
+
+.energy-wave-3 {
+  border-color: rgba(6, 182, 212, 0.25);
+  animation-delay: 4s;
+}
+
+.energy-wave-4 {
+  border-color: rgba(139, 92, 246, 0.2);
+  animation-delay: 6s;
+}
+
+@keyframes energyWaveExpand {
+  0% {
+    width: 100px;
+    height: 100px;
+    opacity: 0.6;
+  }
+  100% {
+    width: 150vmax;
+    height: 150vmax;
+    opacity: 0;
+  }
+}
+
+/* Scanline effect - subtle CRT/hologram feel */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  opacity: 0.5;
+}
+
+/* Portal ring animation */
+.portal-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  animation: portalSpin 20s linear infinite;
+}
+
+.portal-ring-1 {
+  width: 400px;
+  height: 400px;
+  border-color: rgba(107, 33, 168, 0.2);
+  animation-duration: 25s;
+}
+
+.portal-ring-2 {
+  width: 350px;
+  height: 350px;
+  border-color: rgba(230, 36, 41, 0.15);
+  animation-duration: 20s;
+  animation-direction: reverse;
+}
+
+.portal-ring-3 {
+  width: 300px;
+  height: 300px;
+  border-color: rgba(6, 182, 212, 0.2);
+  animation-duration: 15s;
+}
+
+@keyframes portalSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Energy pulse on borders */
+.energy-border {
+  position: relative;
+}
+
+.energy-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg,
+    var(--doomsday-purple),
+    var(--marvel-red),
+    var(--doomsday-cyan),
+    var(--doomsday-purple)
+  );
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: borderRotate 4s linear infinite;
+  background-size: 300% 300%;
+}
+
+.energy-border:hover::before {
+  opacity: 0.7;
+}
+
+@keyframes borderRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ========================================
+   DR. STRANGE PORTAL EFFECT FOR MODALS
+   ======================================== */
+
+/* Portal backdrop effect */
+.portal-backdrop {
+  position: relative;
+}
+
+.portal-backdrop::before {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 166, 0, 0.3) 0%,
+    rgba(255, 140, 0, 0.4) 20%,
+    rgba(230, 36, 41, 0.3) 40%,
+    rgba(107, 33, 168, 0.4) 60%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%);
+  animation: portalOpen 0.5s ease-out forwards;
+  z-index: -1;
+}
+
+@keyframes portalOpen {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    width: 200vmax;
+    height: 200vmax;
+    opacity: 0;
+  }
+}
+
+/* Portal sparks around modal */
+.portal-modal {
+  position: relative;
+}
+
+.portal-modal::before,
+.portal-modal::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  padding: 3px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 166, 0, 0.8) 10deg,
+    rgba(255, 140, 0, 0.9) 20deg,
+    rgba(255, 200, 100, 1) 30deg,
+    rgba(255, 166, 0, 0.8) 40deg,
+    transparent 50deg,
+    transparent 180deg,
+    rgba(255, 166, 0, 0.8) 190deg,
+    rgba(255, 140, 0, 0.9) 200deg,
+    rgba(255, 200, 100, 1) 210deg,
+    rgba(255, 166, 0, 0.8) 220deg,
+    transparent 230deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: portalSparkSpin 3s linear infinite;
+  opacity: 0;
+  z-index: -1;
+}
+
+.portal-modal::after {
+  animation: portalSparkSpin 3s linear infinite reverse;
+  animation-delay: 0.1s;
+}
+
+.portal-modal.active::before,
+.portal-modal.active::after {
+  animation: portalSparkSpin 3s linear infinite, portalSparkFadeIn 0.6s ease-out forwards;
+}
+
+.portal-modal.active::after {
+  animation: portalSparkSpin 3s linear infinite reverse, portalSparkFadeIn 0.6s ease-out forwards;
+  animation-delay: 0.1s;
+}
+
+@keyframes portalSparkSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes portalSparkFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+/* Portal entry animation for content */
+.portal-enter {
+  animation: portalContentEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes portalContentEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotateY(90deg);
+    filter: blur(20px) brightness(2);
+  }
+  30% {
+    filter: blur(10px) brightness(1.5);
+  }
+  60% {
+    transform: scale(1.05) rotateY(-5deg);
+    filter: blur(2px) brightness(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+    filter: blur(0) brightness(1);
+  }
+}
+
+/* Portal exit animation */
+.portal-exit {
+  animation: portalContentExit 0.3s ease-in forwards;
+}
+
+@keyframes portalContentExit {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) rotateY(45deg);
+    filter: blur(10px) brightness(1.5);
   }
 }

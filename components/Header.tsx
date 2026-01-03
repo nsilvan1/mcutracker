@@ -40,9 +40,19 @@ export default function Header({ user, onLoginClick, onLogout }: HeaderProps) {
           <div className="flex items-center gap-3">
             <Film className="w-7 h-7 text-marvel-red" />
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">
-                <span className="text-white">MCU</span>
-                <span className="text-marvel-red"> Tracker</span>
+              <h1 className="text-2xl md:text-3xl font-bold relative glitch-container">
+                <span className="relative z-10">
+                  <span className="text-white">MCU</span>
+                  <span className="text-marvel-red"> Tracker</span>
+                </span>
+                <span className="glitch-layer glitch-cyan" aria-hidden="true">
+                  <span>MCU</span>
+                  <span> Tracker</span>
+                </span>
+                <span className="glitch-layer glitch-red" aria-hidden="true">
+                  <span>MCU</span>
+                  <span> Tracker</span>
+                </span>
               </h1>
               <p className="text-gray-400 text-xs hidden md:block">
                 Até <span className="text-marvel-red font-semibold">Vingadores: Doomsday</span>

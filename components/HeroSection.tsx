@@ -143,6 +143,13 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
         transition={{ duration: 6, repeat: Infinity }}
       />
 
+      {/* Multiverse Portal Rings */}
+      <div className="absolute top-1/2 left-1/2 pointer-events-none">
+        <div className="portal-ring portal-ring-1" />
+        <div className="portal-ring portal-ring-2" />
+        <div className="portal-ring portal-ring-3" />
+      </div>
+
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
         <motion.div

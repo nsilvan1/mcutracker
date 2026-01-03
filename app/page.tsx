@@ -412,6 +412,27 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      {/* Doomsday Background Effects */}
+      {/* Floating Nebula Orbs */}
+      <div className="nebula-orb nebula-orb-1" />
+      <div className="nebula-orb nebula-orb-2" />
+      <div className="nebula-orb nebula-orb-3" />
+      <div className="nebula-orb nebula-orb-4" />
+
+      {/* Energy Waves */}
+      <div className="energy-wave energy-wave-1" />
+      <div className="energy-wave energy-wave-2" />
+      <div className="energy-wave energy-wave-3" />
+      <div className="energy-wave energy-wave-4" />
+
+      {/* Rift Lines */}
+      <div className="rift-overlay">
+        <div className="rift-line" />
+        <div className="rift-line" />
+        <div className="rift-line" />
+        <div className="rift-line" />
+      </div>
+
       <Header
         user={user}
         onLoginClick={() => setIsAuthModalOpen(true)}

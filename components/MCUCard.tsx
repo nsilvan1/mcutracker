@@ -52,9 +52,9 @@ export default function MCUCard({
       className="relative group"
     >
       <div
-        className={`relative bg-marvel-gray rounded-xl overflow-hidden transition-all duration-500 cursor-pointer
-          ${isWatched ? 'ring-2 ring-green-500/60 ring-offset-2 ring-offset-marvel-dark' : 'hover:ring-2 hover:ring-white/20 hover:ring-offset-2 hover:ring-offset-marvel-dark'}
-          transform hover:scale-[1.02] hover:z-10`}
+        className={`relative bg-marvel-gray rounded-xl overflow-hidden cursor-pointer dimensional-card
+          ${isWatched ? 'ring-2 ring-green-500/60 ring-offset-2 ring-offset-marvel-dark' : 'hover:ring-2 hover:ring-doomsday-purple/40 hover:ring-offset-2 hover:ring-offset-marvel-dark'}
+          hover:z-10`}
         onClick={handleCardClick}
       >
         {/* Image container */}
