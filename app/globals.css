@@ -38,3 +38,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Grid pattern utility class - optimized for performance */
+.grid-pattern {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  will-change: auto;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .grid-pattern {
+    background-size: 50px 50px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-pattern {
+    background-size: 60px 60px;
+  }
+}

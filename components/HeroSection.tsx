@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Calendar, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { mcuData } from '@/data/mcu-data';
 
 interface HeroSectionProps {
   watchedCount: number;
@@ -28,6 +30,26 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
     seconds: 0,
   });
 
+  // Pegar apenas filmes do MCU para os posters (18 para 3 fileiras)
+  const heroPosters = useMemo(() => {
+    return mcuData
+      .filter(item => item.type === 'movie')
+      .slice(0, 18)
+      .map(item => ({
+        id: item.id,
+        url: item.imageUrl,
+        title: item.title,
+      }));
+  }, []);
+
+  // Dividir posters em 3 fileiras
+  const posterRows = useMemo(() => {
+    const row1 = heroPosters.slice(0, 6);
+    const row2 = heroPosters.slice(6, 12);
+    const row3 = heroPosters.slice(12, 18);
+    return [row1, row2, row3];
+  }, [heroPosters]);
+
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -50,45 +72,74 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
       }
     };
 
-    // Atualizar imediatamente
     updateCountdown();
-
-    // Atualizar a cada segundo
     const interval = setInterval(updateCountdown, 1000);
-
     return () => clearInterval(interval);
   }, [targetDate]);
 
   return (
-    <div className="relative min-h-[60vh] md:min-h-[70vh] flex items-center justify-center overflow-hidden">
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-marvel-dark via-marvel-gray to-marvel-dark" />
+    <div className="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden">
+      {/* Base gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-marvel-dark via-marvel-gray to-marvel-dark" />
 
-      {/* Animated orbs */}
-      <motion.div
-        className="absolute top-1/4 left-1/4 w-96 h-96 bg-marvel-red/20 rounded-full blur-3xl"
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{ duration: 8, repeat: Infinity }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.2, 0.4, 0.2],
-        }}
-        transition={{ duration: 10, repeat: Infinity }}
-      />
+      {/* Animated poster rows */}
+      <div className="absolute inset-0 opacity-30">
+        {posterRows.map((row, rowIndex) => (
+          <div
+            key={rowIndex}
+            className="absolute w-full flex gap-4 poster-row"
+            style={{
+              top: `${15 + rowIndex * 35}%`,
+              transform: 'translateY(-50%)',
+            }}
+          >
+            <motion.div
+              className="flex gap-4 min-w-max"
+              animate={{
+                x: rowIndex % 2 === 0 ? ['0%', '-50%'] : ['-50%', '0%'],
+              }}
+              transition={{
+                duration: 60,
+                repeat: Infinity,
+                ease: 'linear',
+              }}
+            >
+              {/* Duplicar para loop infinito */}
+              {[...row, ...row, ...row, ...row].map((poster, index) => (
+                <div
+                  key={`${poster.id}-${index}`}
+                  className="relative w-32 md:w-40 aspect-[2/3] rounded-lg overflow-hidden flex-shrink-0"
+                  style={{
+                    transform: `rotate(${(index % 2 === 0 ? -3 : 3)}deg)`,
+                  }}
+                >
+                  <Image
+                    src={poster.url}
+                    alt={poster.title}
+                    fill
+                    className="object-cover"
+                    sizes="160px"
+                    unoptimized
+                  />
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        ))}
+      </div>
 
-      {/* Grid pattern overlay */}
-      <div
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-          backgroundSize: '50px 50px',
+      {/* Vignette overlay - mais suave */}
+      <div className="absolute inset-0 bg-gradient-to-t from-marvel-dark via-transparent to-marvel-dark/80" />
+      <div className="absolute inset-0 bg-gradient-to-r from-marvel-dark/60 via-transparent to-marvel-dark/60" />
+
+      {/* Red glow accent */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-marvel-red/20 rounded-full blur-[120px]"
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.15, 0.25, 0.15],
         }}
+        transition={{ duration: 6, repeat: Infinity }}
       />
 
       {/* Content */}
@@ -103,7 +154,7 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-marvel-red/20 border border-marvel-red/30 rounded-full mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-marvel-red/20 backdrop-blur-sm border border-marvel-red/30 rounded-full mb-6"
           >
             <Sparkles className="w-4 h-4 text-marvel-red" />
             <span className="text-sm text-marvel-red font-medium">Maratona até Vingadores: Doomsday</span>
@@ -111,14 +162,14 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
 
           {/* Title */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-4">
-            <span className="text-white">Sua Jornada no </span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-marvel-red to-red-400">
+            <span className="text-white drop-shadow-lg">Sua Jornada no </span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-marvel-red to-red-400 drop-shadow-lg">
               MCU
             </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-gray-400 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+          <p className="text-gray-300 text-lg md:text-xl mb-8 max-w-2xl mx-auto drop-shadow-md">
             Acompanhe seu progresso assistindo todas as produções da Marvel em ordem cronológica ou de lançamento
           </p>
 
@@ -129,7 +180,7 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="flex items-center gap-4 px-6 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl"
+              className="flex items-center gap-4 px-6 py-4 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl hover:bg-white/10 transition-colors"
             >
               <div className="relative w-14 h-14">
                 <svg className="w-14 h-14 transform -rotate-90">
@@ -162,7 +213,7 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
               </div>
               <div className="text-left">
                 <p className="text-white font-bold text-lg">{watchedCount} de {totalCount}</p>
-                <p className="text-gray-500 text-sm">assistidos</p>
+                <p className="text-gray-400 text-sm">assistidos</p>
               </div>
             </motion.div>
 
@@ -171,11 +222,11 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
-              className="px-6 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl"
+              className="px-6 py-4 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl hover:bg-white/10 transition-colors"
             >
               <div className="flex items-center justify-center gap-2 mb-3">
                 <Calendar className="w-4 h-4 text-marvel-red" />
-                <p className="text-gray-400 text-sm font-medium">até Doomsday</p>
+                <p className="text-gray-300 text-sm font-medium">até Doomsday</p>
               </div>
               <div className="flex items-baseline justify-center gap-1">
                 {[
@@ -195,7 +246,7 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
                     >
                       {item.value.toString().padStart(2, '0')}
                     </motion.span>
-                    <span className="text-xs text-gray-500 ml-0.5">{item.label}</span>
+                    <span className="text-xs text-gray-400 ml-0.5">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -207,10 +258,10 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(229, 9, 20, 0.4)' }}
+            whileHover={{ scale: 1.02, boxShadow: '0 0 60px rgba(229, 9, 20, 0.6)' }}
             whileTap={{ scale: 0.98 }}
             onClick={onScrollToContent}
-            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-marvel-red via-red-600 to-marvel-red bg-[length:200%_100%] hover:bg-right rounded-2xl font-bold text-lg text-white shadow-xl shadow-marvel-red/25 transition-all duration-500 overflow-hidden"
+            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-marvel-red/80 hover:bg-marvel-red backdrop-blur-sm border border-marvel-red/50 rounded-2xl font-bold text-lg text-white shadow-2xl shadow-marvel-red/40 transition-all duration-300 overflow-hidden"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
             <Play className="w-6 h-6 fill-current group-hover:scale-110 transition-transform duration-300" />
