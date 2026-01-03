@@ -628,7 +628,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-center md:text-left">
               <p className="text-gray-500 text-xs mb-1">
-                © 2026 MCU Tracker. Projeto não oficial.
+                © 2026 MCU Tracker. Projeto não oficial. Criado por Frisck Silva
               </p>
               <p className="text-gray-600 text-xs">
                 Marvel Studios e Disney detêm todos os direitos das produções.
