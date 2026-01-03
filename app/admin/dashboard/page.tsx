@@ -23,6 +23,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface DBItem {
   itemId: string;
@@ -308,13 +309,13 @@ export default function AdminDashboard() {
                 <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                 Atualizar
               </button>
-              <a
+              <Link
                 href="/"
                 className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm transition-colors"
               >
                 <Home className="w-4 h-4" />
                 Ver Site
-              </a>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 text-sm transition-colors"
