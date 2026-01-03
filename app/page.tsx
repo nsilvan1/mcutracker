@@ -6,7 +6,6 @@ import { useAdminChanges } from '@/hooks/useAdminChanges';
 import Header from '@/components/Header';
 import OrderToggle from '@/components/OrderToggle';
 import FilterBar from '@/components/FilterBar';
-import ProgressBar from '@/components/ProgressBar';
 import MCUCard from '@/components/MCUCard';
 import SkeletonCard from '@/components/SkeletonCard';
 import AuthModal from '@/components/AuthModal';
@@ -365,16 +364,6 @@ export default function Home() {
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
-
-        {/* Progress Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <ProgressBar watched={watchedCount} total={totalItems} />
         </motion.div>
 
         {/* Info message for logged out users */}
