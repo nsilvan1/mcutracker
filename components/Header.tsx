@@ -79,10 +79,15 @@ export default function Header({ user, onLoginClick, onLogout }: HeaderProps) {
                         transition={{ duration: 0.15 }}
                         className="absolute right-0 mt-2 w-48 bg-marvel-gray border border-white/10 rounded-lg shadow-xl overflow-hidden z-50"
                       >
-                        <div className="px-4 py-3 border-b border-white/10">
+                        <Link
+                          href="/profile"
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="block px-4 py-3 border-b border-white/10 hover:bg-white/5 transition-colors"
+                        >
                           <p className="text-sm font-medium text-white">{user.name}</p>
                           <p className="text-xs text-gray-400 truncate">{user.email}</p>
-                        </div>
+                          <p className="text-xs text-marvel-red mt-1">Ver perfil</p>
+                        </Link>
 
                         {user.isAdmin && (
                           <Link

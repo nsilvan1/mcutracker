@@ -14,7 +14,6 @@ import DetailModal from '@/components/DetailModal';
 import HeroSection from '@/components/HeroSection';
 import SearchBar from '@/components/SearchBar';
 import PhaseFilter from '@/components/PhaseFilter';
-import StatsCard from '@/components/StatsCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SlidersHorizontal, X } from 'lucide-react';
 
@@ -255,31 +254,6 @@ export default function Home() {
     return data;
   }, [order, filter, searchQuery, selectedPhases, mcuItems]);
 
-  // Stats calculations
-  const totalMovies = mcuItems.filter((item) => item.type === 'movie').length;
-  const totalSeries = mcuItems.filter((item) => item.type === 'series').length;
-  const watchedMovies = mcuItems.filter((item) => item.type === 'movie' && watchedItems.has(item.id)).length;
-  const watchedSeries = mcuItems.filter((item) => item.type === 'series' && watchedItems.has(item.id)).length;
-
-  // Calculate total hours watched
-  const totalHours = useMemo(() => {
-    let minutes = 0;
-    mcuItems.forEach((item) => {
-      if (watchedItems.has(item.id) && item.duration) {
-        const match = item.duration.match(/(\d+)h\s*(\d+)?m?/);
-        if (match) {
-          minutes += parseInt(match[1]) * 60 + (parseInt(match[2]) || 0);
-        } else {
-          const minMatch = item.duration.match(/(\d+)\s*min/);
-          if (minMatch) {
-            minutes += parseInt(minMatch[1]);
-          }
-        }
-      }
-    });
-    return Math.round(minutes / 60);
-  }, [watchedItems, mcuItems]);
-
   const totalItems = filteredAndSortedData.length;
   const watchedCount = filteredAndSortedData.filter((item) => watchedItems.has(item.id)).length;
 
@@ -320,17 +294,6 @@ export default function Home() {
       />
 
       <main ref={contentRef} className="px-4 md:px-8 lg:px-12 py-8">
-        {/* Stats Cards */}
-        <div className="mb-8">
-          <StatsCard
-            totalMovies={totalMovies}
-            totalSeries={totalSeries}
-            watchedMovies={watchedMovies}
-            watchedSeries={watchedSeries}
-            totalHours={totalHours}
-          />
-        </div>
-
         {/* Search and Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
