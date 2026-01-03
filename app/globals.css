@@ -4,15 +4,89 @@
 
 :root {
   --marvel-red: #E62429;
-  --marvel-dark: #0A0A0A;
-  --marvel-gray: #1A1A1A;
-  --marvel-light-gray: #2A2A2A;
+  --marvel-dark: #050508;
+  --marvel-gray: #12121a;
+  --marvel-light-gray: #1a1a25;
+  --doomsday-purple: #6B21A8;
+  --doomsday-blue: #1e40af;
+  --doomsday-cyan: #06b6d4;
 }
 
 body {
   background-color: var(--marvel-dark);
   color: white;
   min-height: 100vh;
+  position: relative;
+}
+
+/* Doomsday Background Theme - Intense Multiverse/Apocalyptic Style */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    /* Intense multiverse rifts */
+    radial-gradient(ellipse 100% 80% at 30% 20%, rgba(107, 33, 168, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 80% 30%, rgba(230, 36, 41, 0.2) 0%, transparent 45%),
+    radial-gradient(ellipse 90% 70% at 60% 90%, rgba(30, 64, 175, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 5% 70%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+    radial-gradient(ellipse 60% 40% at 95% 80%, rgba(107, 33, 168, 0.2) 0%, transparent 45%),
+    /* Energy glow at center */
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(107, 33, 168, 0.1) 0%, transparent 70%),
+    /* Dramatic vignette */
+    radial-gradient(ellipse 120% 120% at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.6) 100%),
+    /* Dark base with purple tint */
+    linear-gradient(180deg, #08080f 0%, #0a0a14 30%, #050510 70%, #030308 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Animated cosmic energy particles */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    /* Purple energy particles */
+    radial-gradient(2px 2px at 10% 15%, rgba(147, 51, 234, 0.7) 0%, transparent 100%),
+    radial-gradient(2px 2px at 25% 45%, rgba(107, 33, 168, 0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 25%, rgba(168, 85, 247, 0.5) 0%, transparent 100%),
+    /* Red doom particles */
+    radial-gradient(2px 2px at 70% 20%, rgba(230, 36, 41, 0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 55%, rgba(220, 38, 38, 0.5) 0%, transparent 100%),
+    radial-gradient(2px 2px at 55% 75%, rgba(239, 68, 68, 0.4) 0%, transparent 100%),
+    /* Cyan multiverse sparks */
+    radial-gradient(1px 1px at 15% 80%, rgba(6, 182, 212, 0.6) 0%, transparent 100%),
+    radial-gradient(2px 2px at 90% 85%, rgba(34, 211, 238, 0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 10%, rgba(6, 182, 212, 0.4) 0%, transparent 100%),
+    /* White energy flares */
+    radial-gradient(1px 1px at 30% 60%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 75% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 90%, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+  animation: doomsdayPulse 15s ease-in-out infinite;
+}
+
+@keyframes doomsdayPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  33% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+  66% {
+    opacity: 0.75;
+    transform: scale(0.98);
+  }
 }
 
 /* Custom scrollbar */

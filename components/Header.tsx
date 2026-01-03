@@ -32,7 +32,7 @@ export default function Header({ user, onLoginClick, onLogout }: HeaderProps) {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="bg-marvel-dark/95 backdrop-blur-sm border-b border-marvel-red/30 sticky top-0 z-50"
+      className="bg-marvel-dark/70 backdrop-blur-md border-b border-doomsday-purple/30 sticky top-0 z-50"
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">

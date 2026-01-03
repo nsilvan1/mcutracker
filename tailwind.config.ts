@@ -15,6 +15,11 @@ const config: Config = {
           gray: '#1A1A1A',
           lightGray: '#2A2A2A',
         },
+        doomsday: {
+          purple: '#6B21A8',
+          blue: '#1e40af',
+          cyan: '#06b6d4',
+        },
       },
     },
   },

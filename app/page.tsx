@@ -114,22 +114,22 @@ export default function Home() {
       }
     } else {
       // Usuário não logado - usar localStorage
-      const lastSeenVersion = localStorage.getItem('mcu-last-seen-version');
       const hideWhatsNew = localStorage.getItem('mcu-hide-whats-new') === 'true';
       const hideOnboarding = localStorage.getItem('mcu-hide-onboarding') === 'true';
+      const isFirstVisit = !localStorage.getItem('mcu-has-visited');
 
-      // Mostrar novidades se versão é diferente
-      if (lastSeenVersion !== CURRENT_VERSION && !hideWhatsNew) {
+      // Marcar que já visitou
+      localStorage.setItem('mcu-has-visited', 'true');
+
+      // Mostrar novidades (a menos que o usuário marcou para não mostrar)
+      if (!hideWhatsNew) {
         setTimeout(() => setIsWhatsNewOpen(true), 1000);
       }
 
-      // Mostrar onboarding se é primeira visita
-      if (!hideOnboarding && !lastSeenVersion) {
+      // Mostrar onboarding apenas na primeira visita
+      if (isFirstVisit && !hideOnboarding) {
         setTimeout(() => setIsOnboardingOpen(true), 1500);
       }
-
-      // Salvar versão atual
-      localStorage.setItem('mcu-last-seen-version', CURRENT_VERSION);
     }
   };
 
@@ -411,7 +411,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-marvel-dark">
+    <div className="min-h-screen">
       <Header
         user={user}
         onLoginClick={() => setIsAuthModalOpen(true)}
@@ -623,7 +623,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 px-4 md:px-8 lg:px-12 border-t border-white/10 bg-black/30">
+      <footer className="mt-16 py-8 px-4 md:px-8 lg:px-12 border-t border-doomsday-purple/30 bg-black/20 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-center md:text-left">

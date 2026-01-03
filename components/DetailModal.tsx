@@ -95,7 +95,7 @@ export default function DetailModal({ item, isOpen, isWatched, onClose, onToggle
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed inset-4 md:inset-10 lg:inset-20 z-50 overflow-hidden rounded-xl bg-marvel-dark border border-white/10 shadow-2xl flex flex-col"
+            className="fixed inset-4 md:inset-y-12 md:inset-x-[10%] lg:inset-y-16 lg:inset-x-[15%] xl:inset-y-20 xl:inset-x-[20%] z-50 overflow-hidden rounded-xl bg-marvel-dark border border-white/10 shadow-2xl flex flex-col"
           >
             {/* Close button */}
             <button

@@ -79,8 +79,8 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
 
   return (
     <div className="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden">
-      {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-marvel-dark via-marvel-gray to-marvel-dark" />
+      {/* Base gradient - transparent to show Doomsday theme */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-doomsday-purple/5 to-transparent" />
 
       {/* Animated poster rows */}
       <div className="absolute inset-0 opacity-30">
@@ -128,16 +128,17 @@ export default function HeroSection({ watchedCount, totalCount, onScrollToConten
         ))}
       </div>
 
-      {/* Vignette overlay - mais suave */}
-      <div className="absolute inset-0 bg-gradient-to-t from-marvel-dark via-transparent to-marvel-dark/80" />
-      <div className="absolute inset-0 bg-gradient-to-r from-marvel-dark/60 via-transparent to-marvel-dark/60" />
+      {/* Vignette overlay - transparent to show Doomsday theme */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
 
-      {/* Red glow accent */}
+      {/* Doomsday purple glow accent */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-marvel-red/20 rounded-full blur-[120px]"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[120px]"
+        style={{ background: 'radial-gradient(circle, rgba(107, 33, 168, 0.3) 0%, rgba(230, 36, 41, 0.15) 50%, transparent 70%)' }}
         animate={{
           scale: [1, 1.1, 1],
-          opacity: [0.15, 0.25, 0.15],
+          opacity: [0.25, 0.4, 0.25],
         }}
         transition={{ duration: 6, repeat: Infinity }}
       />
